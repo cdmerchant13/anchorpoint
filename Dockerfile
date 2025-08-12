@@ -10,8 +10,8 @@ COPY package*.json ./
 # Install dependencies including Python for native modules
 RUN apk add --no-cache python3 make g++
 
-# Install Node.js dependencies
-RUN npm ci
+# Install Node.js dependencies with legacy peer deps
+RUN npm ci --legacy-peer-deps
 
 # Copy the rest of the application code
 COPY . .
