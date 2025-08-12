@@ -13,9 +13,6 @@ RUN apk add --no-cache python3 make g++
 # Install Node.js dependencies with legacy peer deps
 RUN npm ci --legacy-peer-deps
 
-# Install Tailwind CSS and related dependencies
-RUN npm install -D tailwindcss@latest postcss@latest autoprefixer@latest --legacy-peer-deps
-
 # Copy the rest of the application code
 COPY . .
 

@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '../lib/auth/nextauth';
 import Link from 'next/link';
 import '../styles/globals.css';
+import '../styles/custom-properties.css';
 
 export const metadata: Metadata = {
   title: 'AnchorPoint',
