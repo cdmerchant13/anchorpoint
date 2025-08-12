@@ -1,4 +1,3 @@
-import '../styles/globals.css';
 import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../lib/auth/nextauth';
@@ -19,26 +18,26 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
-        <header className="bg-[--primary-white] border-b border-[--gray-200]">
-          <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-[--primary-blue]">AnchorPoint</h1>
+        <header>
+          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>AnchorPoint</h1>
             <nav>
-              <ul className="flex space-x-6">
-                <li><Link href="/" className="text-[--primary-blue] hover:text-[--secondary-blue-light]">Home</Link></li>
-                <li><Link href="/about" className="text-[--primary-blue] hover:text-[--secondary-blue-light]">About</Link></li>
+              <ul style={{ display: 'flex', gap: '1.5rem' }}>
+                <li><Link href="/" style={{ textDecoration: 'none', color: '#3C3B6E' }}>Home</Link></li>
+                <li><Link href="/about" style={{ textDecoration: 'none', color: '#3C3B6E' }}>About</Link></li>
                 {session ? (
                   <>
-                    <li><Link href="/dashboard" className="text-[--primary-blue] hover:text-[--secondary-blue-light]">Dashboard</Link></li>
+                    <li><Link href="/dashboard" style={{ textDecoration: 'none', color: '#3C3B6E' }}>Dashboard</Link></li>
                     <li>
                       <form action="/api/auth/logout" method="POST">
-                        <button type="submit" className="text-[--primary-blue] hover:text-[--secondary-blue-light]">
+                        <button type="submit" style={{ backgroundColor: 'transparent', border: 'none', color: '#3C3B6E', cursor: 'pointer' }}>
                           Logout
                         </button>
                       </form>
                     </li>
                   </>
                 ) : (
-                  <li><Link href="/auth/login" className="btn-primary">Login</Link></li>
+                  <li><Link href="/auth/login" style={{ textDecoration: 'none', color: '#3C3B6E' }}>Login</Link></li>
                 )}
               </ul>
             </nav>

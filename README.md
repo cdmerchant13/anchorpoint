@@ -103,6 +103,32 @@ To reset the databases, you can remove the volumes:
 docker compose down -v
 ```
 
+## Module 4: Public Landing Pages
+
+This module implements the public-facing landing pages for unauthenticated users, including:
+
+### Pages
+- **Homepage** (`/`): Hero section, value proposition highlights, how it works, testimonials, and join CTA
+- **About** (`/about`): Mission statement, how it works, and community information
+- **Blog** (`/blog`): Placeholder for future blog/news content
+- **Privacy Policy** (`/privacy`): Privacy policy information
+- **Terms of Service** (`/terms`): Terms of service information
+
+### Features
+- SEO-friendly, mobile-first design
+- Responsive layout following the design system
+- Server-side rendering for optimal SEO
+- Accessible components with proper semantic HTML
+- Modular content sections for easy editing
+- Consistent navigation and footer across all pages
+
+### Customization
+To modify the content:
+1. Edit the page components in `src/app/`
+2. Update text content directly in the JSX
+3. Replace placeholder images with actual assets in the `public/` directory
+4. Modify CTAs by updating the links in the components
+
 ## Troubleshooting
 
 If you encounter issues:
@@ -119,6 +145,6 @@ If you encounter issues:
 
 This foundation supports the following planned modules:
 1. User Authentication (email/password)
-2. Public Landing Pages
+2. Public Landing Pages (completed)
 3. AI Resource Library (OpenRouter integration)
 4. Community Features (discussions, resource sharing)

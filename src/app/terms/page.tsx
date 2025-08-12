@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-export default function About() {
+export default function Terms() {
   return (
     <div className="min-h-screen bg-[--gray-50]">
       <header className="bg-[--primary-white] border-b border-[--gray-200]">
@@ -19,91 +19,79 @@ export default function About() {
 
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-bold text-[--gray-900] mb-6">
-              Helping Military Spouses Thrive After Every Move
-            </h1>
-            <p className="text-xl text-[--gray-700] max-w-3xl mx-auto">
-              AnchorPoint is a community platform designed specifically for military spouses who 
-              understand the unique challenges of frequent Permanent Change of Station (PCS) moves.
+          <h1 className="text-4xl font-bold text-[--gray-900] mb-8">Terms of Service</h1>
+          
+          <div className="card mb-8">
+            <h2 className="text-2xl font-bold text-[--gray-900] mb-4">Acceptance of Terms</h2>
+            <p className="text-[--gray-700] mb-4">
+              By accessing or using the AnchorPoint platform, you agree to be bound by these Terms of Service 
+              and all applicable laws and regulations. If you do not agree with any of these terms, 
+              you are prohibited from using or accessing this site.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
-            <div>
-              <h2 className="text-3xl font-bold text-[--gray-900] mb-6">Our Mission</h2>
-              <p className="text-[--gray-700] mb-6 text-lg">
-                We're on a mission to help military spouses rebuild their communities after every move. 
-                Moving frequently is one of the biggest challenges military families face, and we believe 
-                that having a strong support network is essential for thriving in each new location.
-              </p>
-              <p className="text-[--gray-700] mb-6 text-lg">
-                AnchorPoint connects you with other military spouses at your new base, provides access 
-                to local knowledge and resources, and helps you feel at home anywhere the military sends you.
-              </p>
-              <div className="mt-8">
-                <Link href="/auth/register" className="btn-primary inline-block">
-                  Join Our Community
-                </Link>
-              </div>
-            </div>
-            <div className="bg-[--gray-200] rounded-lg h-96 flex items-center justify-center">
-              <span className="text-[--gray-500]">Community Image</span>
-            </div>
+          <div className="card mb-8">
+            <h2 className="text-2xl font-bold text-[--gray-900] mb-4">Use License</h2>
+            <p className="text-[--gray-700] mb-4">
+              Permission is granted to temporarily download one copy of materials on AnchorPoint's website 
+              for personal, non-commercial transitory viewing only. This is the grant of a license, 
+              not a transfer of title, and under this license you may not:
+            </p>
+            <ul className="list-disc list-inside text-[--gray-700] mb-4 ml-6 space-y-2">
+              <li>Modify or copy the materials</li>
+              <li>Use the materials for any commercial purpose</li>
+              <li>Attempt to decompile or reverse engineer any software</li>
+              <li>Remove any copyright or proprietary notations</li>
+            </ul>
           </div>
 
-          <div className="card mb-16">
-            <h2 className="text-3xl font-bold text-[--gray-900] mb-8 text-center">How AnchorPoint Works</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="bg-[--primary-blue] text-[--primary-white] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">
-                  1
-                </div>
-                <h3 className="text-2xl font-bold text-[--gray-900] mb-4">Create Your Profile</h3>
-                <p className="text-[--gray-700]">
-                  Tell us about your family, current duty station, and what you're looking for in your new community.
-                </p>
-              </div>
-
-              <div className="text-center">
-                <div className="bg-[--primary-blue] text-[--primary-white] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">
-                  2
-                </div>
-                <h3 className="text-2xl font-bold text-[--gray-900] mb-4">Connect & Discover</h3>
-                <p className="text-[--gray-700]">
-                  Find local resources, connect with other spouses, and get personalized recommendations.
-                </p>
-              </div>
-
-              <div className="text-center">
-                <div className="bg-[--primary-blue] text-[--primary-white] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">
-                  3
-                </div>
-                <h3 className="text-2xl font-bold text-[--gray-900] mb-4">Thrive in Your New Home</h3>
-                <p className="text-[--gray-700]">
-                  Build your support network, feel confident about your move, and settle in faster.
-                </p>
-              </div>
-            </div>
+          <div className="card mb-8">
+            <h2 className="text-2xl font-bold text-[--gray-900] mb-4">User Responsibilities</h2>
+            <ul className="list-disc list-inside text-[--gray-700] mb-4 space-y-2">
+              <li>You must provide accurate and complete information when creating an account</li>
+              <li>You are responsible for maintaining the confidentiality of your account and password</li>
+              <li>You agree to accept responsibility for all activities under your account</li>
+              <li>You must not use the platform for any unlawful purpose</li>
+              <li>You must respect the rights and privacy of other users</li>
+            </ul>
           </div>
 
-          <div className="bg-[--primary-blue] text-[--primary-white] rounded-lg p-8 md:p-12 mb-16">
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                Ready to Feel at Home After Your Next Move?
-              </h2>
-              <p className="text-xl mb-8">
-                Join thousands of military spouses who've found their community with AnchorPoint
-              </p>
-              <div className="flex flex-col sm:flex-row justify-center gap-4">
-                <Link href="/auth/register" className="btn-secondary text-center px-8 py-4 text-lg">
-                  Create Your Free Account
-                </Link>
-                <Link href="/" className="bg-[--primary-white] text-[--primary-blue] hover:bg-[--gray-100] border border-[--primary-white] rounded-md px-8 py-4 text-lg transition-colors text-center">
-                  Back to Home
-                </Link>
-              </div>
-            </div>
+          <div className="card mb-8">
+            <h2 className="text-2xl font-bold text-[--gray-900] mb-4">Content Guidelines</h2>
+            <p className="text-[--gray-700] mb-4">
+              You are responsible for the content you post on AnchorPoint. You agree not to post content that:
+            </p>
+            <ul className="list-disc list-inside text-[--gray-700] mb-4 ml-6 space-y-2">
+              <li>Is unlawful, harmful, or fraudulent</li>
+              <li>Infringes on any intellectual property rights</li>
+              <li>Contains personal information of others without consent</li>
+              <li>Is discriminatory or harassing</li>
+              <li>Promotes violence or illegal activities</li>
+            </ul>
+          </div>
+
+          <div className="card mb-8">
+            <h2 className="text-2xl font-bold text-[--gray-900] mb-4">Limitations</h2>
+            <p className="text-[--gray-700] mb-4">
+              In no event shall AnchorPoint or its suppliers be liable for any damages arising out of 
+              the use or inability to use the materials on our platform. We do not warrant that the 
+              service will be uninterrupted or error-free.
+            </p>
+          </div>
+
+          <div className="card mb-8">
+            <h2 className="text-2xl font-bold text-[--gray-900] mb-4">Changes to Terms</h2>
+            <p className="text-[--gray-700] mb-4">
+              AnchorPoint reserves the right to modify these terms at any time. We will notify users 
+              of any significant changes through the platform or via email. Your continued use of the 
+              platform after such modifications constitutes your acceptance of the new terms.
+            </p>
+          </div>
+
+          <div className="text-center mt-12">
+            <Link href="/" className="btn-primary inline-block">
+              Back to Home
+            </Link>
           </div>
         </div>
       </main>
