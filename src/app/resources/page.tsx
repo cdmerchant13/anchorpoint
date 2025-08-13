@@ -1,9 +1,6 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/nextauth';
+import { redirect } from 'next/navigation';
 import BaseSelector from '@/components/BaseSelector';
 import SubmissionForm from '@/components/SubmissionForm';
 import SubmissionCard from '@/components/SubmissionCard';
@@ -24,141 +21,67 @@ interface Submission {
   _count: { votes: number; comments: number };
 }
 
-export default function ResourcesPage() {
-  const router = useRouter();
-  const [session, setSession] = useState<any>(null);
-  const [selectedBase, setSelectedBase] = useState<string | null>(null);
-  const [submissions, setSubmissions] = useState<Submission[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showSubmissionForm, setShowSubmissionForm] = useState(false);
-  const [viewingSubmission, setViewingSubmission] = useState<string | null>(null);
-  const [tags, setTags] = useState<{ name: string; count: number }[]>([]);
-
-  const checkAuth = async () => {
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      router.push('/auth/login');
-    } else {
-      setSession(session);
-    }
+interface SubmissionsResponse {
+  submissions: Submission[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    pages: number;
   };
+}
 
-  useEffect(() => {
-    checkAuth();
-    fetchSubmissions();
-    fetchTags();
-  }, [checkAuth]); // Added checkAuth to dependencies
+interface TagsResponse {
+  tags: { name: string; count: number }[];
+}
 
-  useEffect(() => {
-    if (selectedBase) {
-      fetchSubmissions(selectedBase);
-    } else {
-      fetchSubmissions();
-    }
-  }, [selectedBase]);
+async function fetchSubmissions(baseId?: string): Promise<SubmissionsResponse> {
+  const params = new URLSearchParams();
+  if (baseId) params.append('baseId', baseId);
+  
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/submissions?${params}`);
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch submissions');
+  }
+  
+  return response.json();
+}
 
-  const fetchSubmissions = async (baseId?: string) => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      if (baseId) params.append('baseId', baseId);
-      
-      const response = await fetch(`/api/submissions?${params}`);
-      if (response.ok) {
-        const data = await response.json();
-        setSubmissions(data.submissions);
-      }
-    } catch (error) {
-      console.error('Error fetching submissions:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+async function fetchTags(): Promise<TagsResponse> {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/tags`);
+  
+  if (!response.ok) {
+    throw new Error('Failed to fetch tags');
+  }
+  
+  return response.json();
+}
 
-  const fetchTags = async () => {
-    try {
-      const response = await fetch('/api/tags');
-      if (response.ok) {
-        const data = await response.json();
-        setTags(data.tags);
-      }
-    } catch (error) {
-      console.error('Error fetching tags:', error);
-    }
-  };
+export default async function ResourcesPage() {
+  const session = await getServerSession(authOptions);
 
-  const handleSubmission = async (baseId: string, text: string) => {
-    try {
-      const response = await fetch('/api/submissions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ baseId, rawText: text })
-      });
-
-      if (response.ok) {
-        setShowSubmissionForm(false);
-        await fetchSubmissions(selectedBase || undefined);
-      }
-    } catch (error) {
-      console.error('Error creating submission:', error);
-    }
-  };
-
-  const handleVote = async (submissionId: string, value: number) => {
-    try {
-      const method = value === 0 ? 'DELETE' : 'POST';
-      const response = await fetch('/api/votes', {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: value === 0 
-          ? JSON.stringify({ submissionId })
-          : JSON.stringify({ submissionId, value })
-      });
-
-      if (response.ok) {
-        await fetchSubmissions(selectedBase || undefined);
-      }
-    } catch (error) {
-      console.error('Error voting:', error);
-    }
-  };
-
-  const handleComment = (submissionId: string) => {
-    setViewingSubmission(submissionId);
-  };
-
-  const handleBackToSubmissions = () => {
-    setViewingSubmission(null);
-  };
-
+  // Redirect to login if not authenticated
   if (!session) {
-    return <div>Loading...</div>;
+    redirect('/auth/login');
   }
 
-  if (viewingSubmission) {
-    return (
-      <div className="min-h-screen bg-[--gray-50]">
-        <header className="bg-[--primary-white] border-b border-[--gray-200]">
-          <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-            <button 
-              onClick={handleBackToSubmissions}
-              className="text-[--primary-blue] hover:text-[--secondary-blue-light] flex items-center gap-2"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
-              </svg>
-              Back to Submissions
-            </button>
-            <h1 className="text-2xl font-bold text-[--primary-blue]">AnchorPoint</h1>
-            <div></div>
-          </div>
-        </header>
+  let submissions: Submission[] = [];
+  let tags: { name: string; count: number }[] = [];
+  let error: string | null = null;
 
-        <main className="container mx-auto px-4 py-8">
-          <CommentsSection submissionId={viewingSubmission} />
-        </main>
-      </div>
-    );
+  try {
+    // Fetch initial data
+    const [submissionsData, tagsData] = await Promise.all([
+      fetchSubmissions(),
+      fetchTags()
+    ]);
+    
+    submissions = submissionsData.submissions;
+    tags = tagsData.tags;
+  } catch (err) {
+    console.error('Error fetching initial data:', err);
+    error = 'Failed to load content. Please try again later.';
   }
 
   return (
@@ -191,8 +114,11 @@ export default function ResourcesPage() {
             </p>
 
             <BaseSelector
-              selectedBase={selectedBase || undefined}
-              onBaseSelect={setSelectedBase}
+              selectedBase={undefined}
+              onBaseSelect={(baseId) => {
+                // In a real implementation, this would trigger a server action or redirect
+                console.log('Base selected:', baseId);
+              }}
               onCreateNew={(name, location) => {
                 console.log('New base created:', name, location);
               }}
@@ -200,34 +126,25 @@ export default function ResourcesPage() {
           </div>
 
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-xl font-semibold text-[--gray-900]">
-              {selectedBase ? 'Base Submissions' : 'All Submissions'}
-            </h3>
+            <h3 className="text-xl font-semibold text-[--gray-900]">All Submissions</h3>
             <button
-              onClick={() => setShowSubmissionForm(!showSubmissionForm)}
+              onClick={() => {
+                // In a real implementation, this would show/hide the submission form
+                console.log('Toggle submission form');
+              }}
               className="btn-primary"
             >
-              {showSubmissionForm ? 'Cancel' : 'Add Submission'}
+              Add Submission
             </button>
           </div>
 
-          {showSubmissionForm && (
-            <SubmissionForm
-              baseId={selectedBase || undefined}
-              onSubmit={handleSubmission}
-              onCancel={() => setShowSubmissionForm(false)}
-              className="mb-8"
-            />
-          )}
-
-          {loading ? (
-            <div className="text-center py-8">Loading submissions...</div>
+          {error ? (
+            <div className="text-center py-8 text-[--red-600]">
+              {error}
+            </div>
           ) : submissions.length === 0 ? (
             <div className="text-center py-8 text-[--gray-600]">
-              {selectedBase 
-                ? 'No submissions for this base yet. Be the first to share!' 
-                : 'No submissions yet. Start by adding one above!'
-              }
+              No submissions yet. Start by adding one above!
             </div>
           ) : (
             <div className="space-y-6">
@@ -235,8 +152,14 @@ export default function ResourcesPage() {
                 <SubmissionCard
                   key={submission.id}
                   submission={submission}
-                  onVote={handleVote}
-                  onComment={handleComment}
+                  onVote={(submissionId, value) => {
+                    // In a real implementation, this would call the API
+                    console.log('Vote:', submissionId, value);
+                  }}
+                  onComment={(submissionId) => {
+                    // In a real implementation, this would navigate to the submission detail
+                    console.log('View comments:', submissionId);
+                  }}
                 />
               ))}
             </div>
