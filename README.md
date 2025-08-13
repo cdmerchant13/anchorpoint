@@ -10,6 +10,7 @@ A Docker-based, fully-local web application to help U.S. military spouses connec
 - **Graph Database**: Neo4j
 - **AI Integration**: OpenRouter API
 - **Deployment**: Docker Compose
+- **Styling**: Tailwind CSS with Custom Design System
 
 ## Prerequisites
 
@@ -73,6 +74,17 @@ anchorpoint/
 
 This project follows a specific design system based on a patriotic red/white/blue color scheme inspired by the American flag. Refer to `DESIGN_SYSTEM.md` for detailed information on colors, typography, spacing, and component styles.
 
+### CSS Implementation
+
+The styling system has been recently updated to resolve CSS loading issues:
+
+- **Global CSS**: Created `src/styles/globals.css` with Tailwind imports and CSS custom properties
+- **Layout Integration**: Updated `src/app/layout.tsx` to import global CSS for all pages
+- **Tailwind Configuration**: Modified `tailwind.config.js` to recognize CSS custom properties
+- **PostCSS Configuration**: Updated `postcss.config.js` to include Tailwind CSS processing
+
+This ensures the design system colors are properly applied across all pages and resolves the greyscale display issues that were occurring during testing.
+
 ## Deployment
 
 To deploy the application:
@@ -103,18 +115,28 @@ To reset the databases, you can remove the volumes:
 docker compose down -v
 ```
 
-## Module 4: Public Landing Pages
+## Current Module Status
 
-This module implements the public-facing landing pages for unauthenticated users, including:
+### ✅ Module 1: Core Setup (Completed)
+- Next.js 15 with TypeScript configuration
+- Docker and Docker Compose setup
+- Database schemas (PostgreSQL and Neo4j) initialized
+- Project structure established
 
-### Pages
+### ✅ Module 2: User Authentication Framework (Completed)
+- NextAuth.js integration with TypeScript
+- Login and registration pages created
+- Password utilities implemented
+- Authentication API routes structured
+
+### ✅ Module 3: Public Landing Pages (Completed)
 - **Homepage** (`/`): Hero section, value proposition highlights, how it works, testimonials, and join CTA
 - **About** (`/about`): Mission statement, how it works, and community information
 - **Blog** (`/blog`): Placeholder for future blog/news content
 - **Privacy Policy** (`/privacy`): Privacy policy information
 - **Terms of Service** (`/terms`): Terms of service information
 
-### Features
+#### Features
 - SEO-friendly, mobile-first design
 - Responsive layout following the design system
 - Server-side rendering for optimal SEO
@@ -122,7 +144,7 @@ This module implements the public-facing landing pages for unauthenticated users
 - Modular content sections for easy editing
 - Consistent navigation and footer across all pages
 
-### Customization
+#### Customization
 To modify the content:
 1. Edit the page components in `src/app/`
 2. Update text content directly in the JSX
@@ -141,10 +163,71 @@ If you encounter issues:
    docker compose logs <service-name>
    ```
 
+## Agentic Coding Guidance
+
+This project follows agentic coding principles to ensure consistent development practices. Refer to `QWEN.md` for detailed guidance, but here are key points for future development sessions:
+
+### Development Principles
+- **Modular Monolith**: Write clear, decoupled modules. Auth, submissions, and AI components must be self-contained.
+- **Consistent Naming**: Use PascalCase for components, camelCase for vars/functions, snake_case for database fields.
+- **Design System First**: All UI must align with `DESIGN_SYSTEM.md` styles (spacing, typography, colors).
+- **Clean, Readable Code**: Prefer clarity over cleverness. Comments should explain *why*, not *what*.
+
+### Recent Development Work (Session Summary)
+- **CSS System Fix**: Resolved styling issues by implementing a global CSS system with Tailwind integration
+- **Build Process**: Fixed build errors by reorganizing API routes to avoid static export conflicts
+- **Navigation**: Consolidated navigation into the layout component for consistency
+- **Authentication Framework**: Established NextAuth.js foundation ready for implementation
+
+### Future Development Notes
+- Authentication system is fully structured but needs environment variables for production use
+- CSS variables are properly configured and should be used for all styling
+- API routes should be placed in `src/app/api/` but may need to be moved during static builds
+- Always test both development (`npm run dev`) and production (`npm run build`) builds
+
+### Common Issues to Avoid
+1. **CSS Loading**: Always import global CSS in the layout file, not individual pages
+2. **Build Conflicts**: Dynamic API routes may need to be temporarily moved during static builds
+3. **TypeScript**: Ensure proper type definitions for all new components and utilities
+4. **Design System**: Use CSS custom properties rather than hard-coded values
+
 ## Future Modules
 
-This foundation supports the following planned modules:
-1. User Authentication (email/password)
-2. Public Landing Pages (completed)
-3. AI Resource Library (OpenRouter integration)
-4. Community Features (discussions, resource sharing)
+### ✅ Module 4: AI Resource Library (Completed)
+- OpenRouter API integration for AI-powered content processing
+- Unstructured submissions → structured AI output with tone smoothing and grammar correction
+- Dynamic tag generation (4-5 tags per submission including base/branch)
+- Resource voting and commenting system
+- Base selection and creation functionality
+- Configurable AI model via OPENROUTER_MODEL environment variable
+- Tag viewing system (all tags and tags per base)
+
+#### Features Implemented
+- **AI Processing**: Raw text is sent to OpenRouter API for structuring, tone smoothing, and tagging
+- **Database Schema**: Extended Prisma schema with Base, Submission, Vote, and Comment models
+- **API Endpoints**: Complete CRUD operations for all resources
+- **Frontend Components**: 
+  - BaseSelector with dynamic base creation
+  - SubmissionForm with AI processing indicator
+  - SubmissionCard with voting and comment access
+  - CommentsSection with threaded replies
+- **Authentication Integration**: Protected routes and user-specific voting/commenting
+- **Dashboard Integration**: Link to Resource Library and login redirect
+
+#### Roadmap for Tag System Enhancement
+- **Future Enhancement**: Develop task and function to smooth out tags and ensure consistency across submissions
+- **Implementation Plan**: Create a background job to analyze and standardize tag naming conventions
+- **Data Migration**: Plan for tag consolidation and synonym resolution
+- **User Experience**: Implement tag search and filtering capabilities
+
+### 🚧 Module 5: Community Features (Planned)
+- Discussion forums and groups
+- Resource sharing and recommendations
+- Community events and meetups
+- Direct messaging between users
+
+### 🚧 Module 6: Advanced Features (Planned)
+- Identity verification (ID.me integration)
+- Sponsored content and monetization hooks
+- PWA (Progressive Web App) capabilities
+- Search optimizations

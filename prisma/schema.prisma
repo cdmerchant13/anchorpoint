@@ -20,6 +20,58 @@ model User {
   updatedAt     DateTime   @updatedAt
   sessions      Session[]
   accounts      Account[]
+  submissions   Submission[]
+  votes         Vote[]
+  comments      Comment[]
+}
+
+model Base {
+  id        String    @id @default(uuid())
+  name      String
+  location  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  submissions Submission[]
+}
+
+model Submission {
+  id           String   @id @default(uuid())
+  baseId       String
+  userId       String
+  rawText      String
+  processedJson String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  base         Base     @relation(fields: [baseId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  votes        Vote[]
+  comments     Comment[]
+}
+
+model Vote {
+  id           String   @id @default(uuid())
+  submissionId String
+  userId       String
+  value        Int      // +1 for upvote, -1 for downvote
+  createdAt    DateTime @default(now())
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([submissionId, userId]) // One vote per user per submission
+}
+
+model Comment {
+  id             String    @id @default(uuid())
+  submissionId   String
+  userId         String
+  parentCommentId String?  // For threaded replies
+  text           String
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  submission     Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent         Comment?  @relation("CommentReplies", fields: [parentCommentId], references: [id])
+  replies        Comment[] @relation("CommentReplies")
 }
 
 model Account {

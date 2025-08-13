@@ -56,9 +56,9 @@ export default async function DashboardPage() {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="card-accent">
-              <h3 className="text-xl font-bold text-[--gray-900] mb-2">Resources</h3>
-              <p className="text-[--gray-700] mb-4">Browse and share local resources for your duty station.</p>
-              <Link href="/resources" className="btn-primary inline-block">View Resources</Link>
+              <h3 className="text-xl font-bold text-[--gray-900] mb-2">Resource Library</h3>
+              <p className="text-[--gray-700] mb-4">Share and discover insights about military bases from fellow spouses.</p>
+              <Link href="/resources" className="btn-primary inline-block">Browse Library</Link>
             </div>
             
             <div className="card-accent">
