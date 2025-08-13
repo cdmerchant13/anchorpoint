@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/nextauth';
 import { PrismaClient } from '@prisma/client';
 
+// Use centralized Prisma client
 const prisma = new PrismaClient();
 
 // GET /api/bases - Get all bases
