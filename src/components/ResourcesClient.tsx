@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SubmissionCard from '@/components/SubmissionCard';
 
 interface Submission {
@@ -46,6 +46,56 @@ export default function ResourcesClient({
   const [showSubmissionForm, setShowSubmissionForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
+
+  // Initialize with loading state if we have no initial data
+  const [initialLoadComplete, setInitialLoadComplete] = useState(initialSubmissions.length > 0);
+
+  useEffect(() => {
+    // If we don't have initial data, fetch it
+    if (!initialLoadComplete && initialSubmissions.length === 0) {
+      fetchInitialData();
+    }
+  }, [initialLoadComplete, initialSubmissions.length]);
+
+  const fetchInitialData = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      // Use Promise.allSettled to handle partial failures gracefully
+      const [submissionsResponse, tagsResponse, basesResponse] = await Promise.allSettled([
+        fetch('/api/submissions', { cache: 'no-store' }),
+        fetch('/api/tags', { cache: 'no-store' }),
+        fetch('/api/bases', { cache: 'no-store' })
+      ]);
+
+      // Handle submissions response
+      if (submissionsResponse.status === 'fulfilled' && submissionsResponse.value.ok) {
+        const submissionsData = await submissionsResponse.value.json();
+        setSubmissions(submissionsData.submissions || []);
+      }
+
+      // Handle tags response
+      if (tagsResponse.status === 'fulfilled' && tagsResponse.value.ok) {
+        const tagsData = await tagsResponse.value.json();
+        setTags(tagsData.tags || []);
+      }
+
+      // Handle bases response
+      if (basesResponse.status === 'fulfilled' && basesResponse.value.ok) {
+        const basesData = await basesResponse.value.json();
+        setBases(basesData);
+      }
+      
+      setInitialLoadComplete(true);
+    } catch (err) {
+      console.error('Error fetching initial data:', err);
+      setError('Failed to load data. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleVote = async (submissionId: string, value: number) => {
     try {
@@ -74,9 +124,12 @@ export default function ResourcesClient({
           }
           return sub;
         }));
+      } else {
+        console.error('Vote API error:', response.status);
       }
     } catch (error) {
       console.error('Error voting:', error);
+      // In a real app, we might show a toast notification here
     }
   };
 
@@ -103,6 +156,8 @@ export default function ResourcesClient({
         const newBase = await response.json();
         setBases(prev => [...prev, newBase]);
         return newBase;
+      } else {
+        throw new Error('Failed to create base');
       }
     } catch (error) {
       console.error('Error creating base:', error);
@@ -117,11 +172,12 @@ export default function ResourcesClient({
     const location = newBaseLocation.trim();
     
     if (!name || !location) {
-      alert('Please fill in both name and location');
+      setBaseError('Please fill in both name and location');
       return;
     }
 
     setCreatingBase(true);
+    setBaseError(null);
     
     try {
       const newBase = await handleCreateBase(name, location);
@@ -139,7 +195,7 @@ export default function ResourcesClient({
       setSuccessMessage(`Base "${newBase.name}" created successfully!`);
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
-      alert('Failed to create base. Please try again.');
+      setBaseError('Failed to create base. Please try again.');
     } finally {
       setCreatingBase(false);
     }
@@ -147,6 +203,8 @@ export default function ResourcesClient({
 
   const fetchSubmissions = async (baseId?: string | null) => {
     setLoading(true);
+    setError(null);
+    
     try {
       const url = baseId ? `/api/submissions?baseId=${baseId}` : '/api/submissions';
       const response = await fetch(url, {
@@ -156,10 +214,12 @@ export default function ResourcesClient({
       if (response.ok) {
         const data = await response.json();
         setSubmissions(data.submissions || []);
+      } else {
+        throw new Error(`Failed to fetch submissions: ${response.status}`);
       }
     } catch (error) {
       console.error('Error fetching submissions:', error);
-      setError('Failed to load submissions');
+      setError('Failed to load submissions. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -176,12 +236,12 @@ export default function ResourcesClient({
     const rawText = textarea.value.trim();
     
     if (!baseId || !rawText) {
-      setError('Please select a base and enter your submission');
+      setSubmissionError('Please select a base and enter your submission');
       return;
     }
 
     setUploading(true);
-    setError(null);
+    setSubmissionError(null);
 
     try {
       // Show AI processing indicator
@@ -209,11 +269,11 @@ export default function ResourcesClient({
         setTimeout(() => setSuccessMessage(''), 3000);
       } else {
         const errorData = await response.json();
-        setError(errorData.error || 'Failed to submit');
+        setSubmissionError(errorData.error || 'Failed to submit');
       }
     } catch (error) {
       console.error('Error submitting:', error);
-      setError('An unexpected error occurred');
+      setSubmissionError('An unexpected error occurred. Please try again.');
     } finally {
       setUploading(false);
       setProcessing(false);
@@ -223,10 +283,44 @@ export default function ResourcesClient({
   const [uploading, setUploading] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
+  const [baseError, setBaseError] = useState<string | null>(null);
   const [showCreateBaseModal, setShowCreateBaseModal] = useState(false);
   const [newBaseName, setNewBaseName] = useState('');
   const [newBaseLocation, setNewBaseLocation] = useState('');
   const [creatingBase, setCreatingBase] = useState(false);
+
+  // Show loading state during initial load
+  if (!initialLoadComplete && loading) {
+    return (
+      <div className="max-w-4xl mx-auto flex justify-center items-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[--primary-blue] mx-auto"></div>
+          <p className="mt-4 text-[--gray-600]">Loading resource library...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state with retry option
+  if (!initialLoadComplete && error) {
+    return (
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-red-50 border border-red-200 rounded-md p-6 text-center">
+          <p className="text-red-700 mb-4">{error}</p>
+          <button 
+            onClick={() => {
+              setRetryCount(prev => prev + 1);
+              fetchInitialData();
+            }}
+            className="btn-primary"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -247,6 +341,7 @@ export default function ResourcesClient({
                 value={selectedBaseId || ''}
                 onChange={(e) => handleBaseSelect(e.target.value || null)}
                 className="flex-1 p-2 border border-[--gray-300] rounded-md bg-[--primary-white]"
+                disabled={loading}
               >
                 <option value="">All bases</option>
                 {bases.map((base) => (
@@ -260,6 +355,7 @@ export default function ResourcesClient({
                 onClick={() => setShowCreateBaseModal(true)}
                 className="btn-tertiary px-4 py-2 whitespace-nowrap"
                 title="Add new base"
+                disabled={loading}
               >
                 + Add Base
               </button>
@@ -275,6 +371,7 @@ export default function ResourcesClient({
         <button
           onClick={() => setShowSubmissionForm(!showSubmissionForm)}
           className="btn-primary"
+          disabled={loading}
         >
           {showSubmissionForm ? 'Cancel' : 'Add Submission'}
         </button>
@@ -293,9 +390,9 @@ export default function ResourcesClient({
             </div>
           )}
           
-          {error && (
+          {submissionError && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700">
-              {error}
+              {submissionError}
             </div>
           )}
 
@@ -308,6 +405,7 @@ export default function ResourcesClient({
                 id="base-select"
                 required
                 className="w-full p-2 border border-[--gray-300] rounded-md bg-[--primary-white] focus:ring-2 focus:ring-[--primary-blue] focus:border-transparent"
+                disabled={loading}
               >
                 <option value="">Select a base...</option>
                 {bases.map((base) => (
@@ -327,7 +425,7 @@ export default function ResourcesClient({
                 placeholder="Share your tips, experiences, or questions about this base..."
                 rows={4}
                 className="w-full p-3 border border-[--gray-300] rounded-md focus:ring-2 focus:ring-[--primary-blue] focus:border-transparent resize-none"
-                disabled={processing}
+                disabled={processing || loading}
               />
               {processing && (
                 <div className="mt-2 text-sm text-[--primary-blue] flex items-center gap-2">
@@ -345,13 +443,13 @@ export default function ResourcesClient({
                 type="button"
                 onClick={() => setShowSubmissionForm(false)}
                 className="btn-tertiary px-4 py-2"
-                disabled={uploading}
+                disabled={uploading || loading}
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                disabled={uploading || processing}
+                disabled={uploading || processing || loading}
                 className="btn-primary px-6 py-2 disabled:opacity-50 flex items-center gap-2"
               >
                 {uploading ? (
@@ -373,11 +471,32 @@ export default function ResourcesClient({
 
       {error && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md text-red-700">
-          {error}
+          <div className="flex justify-between items-center">
+            <span>{error}</span>
+            <button 
+              onClick={() => {
+                setRetryCount(prev => prev + 1);
+                if (selectedBaseId) {
+                  fetchSubmissions(selectedBaseId);
+                } else {
+                  fetchSubmissions();
+                }
+              }}
+              className="btn-tertiary text-sm px-3 py-1"
+            >
+              Retry
+            </button>
+          </div>
         </div>
       )}
 
-      {submissions.length === 0 ? (
+      {loading && (
+        <div className="flex justify-center items-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[--primary-blue]"></div>
+        </div>
+      )}
+
+      {!loading && submissions.length === 0 ? (
         <div className="text-center py-8 text-[--gray-600]">
           {selectedBaseId 
             ? 'No submissions for this base yet. Be the first to share!' 
@@ -385,16 +504,18 @@ export default function ResourcesClient({
           }
         </div>
       ) : (
-        <div className="space-y-6">
-          {submissions.map((submission) => (
-            <SubmissionCard
-              key={submission.id}
-              submission={submission}
-              onVote={handleVote}
-              onComment={handleComment}
-            />
-          ))}
-        </div>
+        !loading && (
+          <div className="space-y-6">
+            {submissions.map((submission) => (
+              <SubmissionCard
+                key={submission.id}
+                submission={submission}
+                onVote={handleVote}
+                onComment={handleComment}
+              />
+            ))}
+          </div>
+        )
       )}
 
       {/* Base Creation Modal */}
@@ -413,6 +534,12 @@ export default function ResourcesClient({
               </button>
             </div>
             
+            {baseError && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700">
+                {baseError}
+              </div>
+            )}
+            
             <form onSubmit={handleCreateNewBase} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-[--gray-700] mb-1">
@@ -425,6 +552,7 @@ export default function ResourcesClient({
                   placeholder="e.g., Fort Bragg"
                   className="w-full p-2 border border-[--gray-300] rounded-md focus:ring-2 focus:ring-[--primary-blue] focus:border-transparent"
                   required
+                  disabled={creatingBase}
                 />
               </div>
               
@@ -439,6 +567,7 @@ export default function ResourcesClient({
                   placeholder="e.g., North Carolina"
                   className="w-full p-2 border border-[--gray-300] rounded-md focus:ring-2 focus:ring-[--primary-blue] focus:border-transparent"
                   required
+                  disabled={creatingBase}
                 />
               </div>
               
