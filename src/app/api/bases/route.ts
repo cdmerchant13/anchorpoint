@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/nextauth';
-import { PrismaClient } from '@prisma/client';
-
-// Use centralized Prisma client
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 // GET /api/bases - Get all bases
 export async function GET() {
@@ -22,7 +19,7 @@ export async function GET() {
   } catch (error) {
     console.error('Error fetching bases:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch bases' },
+      { error: 'Failed to fetch bases: ' + (error as Error).message },
       { status: 500 }
     );
   }
@@ -49,19 +46,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if base already exists
+    // Improved duplicate detection - check for exact name AND location match
     const existingBase = await prisma.base.findFirst({
       where: {
-        OR: [
-          { name: { equals: name, mode: 'insensitive' } },
-          { location: { equals: location, mode: 'insensitive' } }
-        ]
+        name: { equals: name.trim(), mode: 'insensitive' },
+        location: { equals: location.trim(), mode: 'insensitive' }
       }
     });
 
     if (existingBase) {
       return NextResponse.json(
-        { error: 'A base with this name or location already exists' },
+        { error: 'A base with this name and location already exists' },
         { status: 409 }
       );
     }
@@ -77,7 +72,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error creating base:', error);
     return NextResponse.json(
-      { error: 'Failed to create base' },
+      { error: 'Failed to create base: ' + (error as Error).message },
       { status: 500 }
     );
   }
