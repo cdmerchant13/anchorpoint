@@ -39,6 +39,9 @@ export default function Home() {
               <Link href="/auth/register" className="btn-primary text-center px-8 py-4 text-lg">
                 Join the Community
               </Link>
+              <Link href="/auth/login" className="btn-tertiary text-center px-8 py-4 text-lg">
+                Sign In
+              </Link>
               <Link href="#how-it-works" className="btn-tertiary text-center px-8 py-4 text-lg">
                 See How It Works
               </Link>

@@ -28,7 +28,7 @@ export default function LoginPage() {
         setError('Invalid email or password');
       } else {
         // Use window.location instead of router.push to avoid headers() issue
-        window.location.href = '/resources';
+        window.location.href = '/dashboard';
       }
     } catch (err) {
       setError('An unexpected error occurred');

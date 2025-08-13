@@ -1,88 +1,35 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/nextauth';
 import { redirect } from 'next/navigation';
-import BaseSelector from '@/components/BaseSelector';
-import SubmissionForm from '@/components/SubmissionForm';
-import SubmissionCard from '@/components/SubmissionCard';
-import CommentsSection from '@/components/CommentsSection';
+import ResourcesClient from '@/components/ResourcesClient';
 
-interface Submission {
-  id: string;
-  baseId: string;
-  userId: string;
-  rawText: string;
-  processedJson: string | null;
-  createdAt: string;
-  updatedAt: string;
-  base: { id: string; name: string; location: string };
-  user: { id: string; name: string };
-  voteScore: number;
-  userVote: number;
-  _count: { votes: number; comments: number };
-}
+// Server component for layout and data fetching
+async function ResourcesLayout() {
+  // Check authentication on the server side
+  const sessionResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/auth/session`, {
+    cache: 'no-store'
+  });
 
-interface SubmissionsResponse {
-  submissions: Submission[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    pages: number;
-  };
-}
-
-interface TagsResponse {
-  tags: { name: string; count: number }[];
-}
-
-async function fetchSubmissions(baseId?: string): Promise<SubmissionsResponse> {
-  const params = new URLSearchParams();
-  if (baseId) params.append('baseId', baseId);
-  
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/submissions?${params}`);
-  
-  if (!response.ok) {
-    throw new Error('Failed to fetch submissions');
-  }
-  
-  return response.json();
-}
-
-async function fetchTags(): Promise<TagsResponse> {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/tags`);
-  
-  if (!response.ok) {
-    throw new Error('Failed to fetch tags');
-  }
-  
-  return response.json();
-}
-
-export default async function ResourcesPage() {
-  const session = await getServerSession(authOptions);
-
-  // Redirect to login if not authenticated
-  if (!session) {
+  if (!sessionResponse.ok) {
     redirect('/auth/login');
   }
 
-  let submissions: Submission[] = [];
-  let tags: { name: string; count: number }[] = [];
-  let error: string | null = null;
+  const session = await sessionResponse.json();
 
-  try {
-    // Fetch initial data
-    const [submissionsData, tagsData] = await Promise.all([
-      fetchSubmissions(),
-      fetchTags()
-    ]);
-    
-    submissions = submissionsData.submissions;
-    tags = tagsData.tags;
-  } catch (err) {
-    console.error('Error fetching initial data:', err);
-    error = 'Failed to load content. Please try again later.';
-  }
+  // Fetch initial data
+  const [submissionsResponse, tagsResponse, basesResponse] = await Promise.all([
+    fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/submissions`, {
+      cache: 'no-store'
+    }),
+    fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/tags`, {
+      cache: 'no-store'
+    }),
+    fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/bases`, {
+      cache: 'no-store'
+    })
+  ]);
+
+  const submissions = submissionsResponse.ok ? await submissionsResponse.json() : { submissions: [] };
+  const tags = tagsResponse.ok ? await tagsResponse.json() : { tags: [] };
+  const bases = basesResponse.ok ? await basesResponse.json() : [];
 
   return (
     <div className="min-h-screen bg-[--gray-50]">
@@ -106,82 +53,12 @@ export default async function ResourcesPage() {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-[--gray-900] mb-4">Resource Library</h2>
-            <p className="text-lg text-[--gray-700] mb-6">
-              Share and discover insights about military bases from fellow military spouses.
-            </p>
-
-            <BaseSelector
-              selectedBase={undefined}
-              onBaseSelect={(baseId) => {
-                // In a real implementation, this would trigger a server action or redirect
-                console.log('Base selected:', baseId);
-              }}
-              onCreateNew={(name, location) => {
-                console.log('New base created:', name, location);
-              }}
-            />
-          </div>
-
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-xl font-semibold text-[--gray-900]">All Submissions</h3>
-            <button
-              onClick={() => {
-                // In a real implementation, this would show/hide the submission form
-                console.log('Toggle submission form');
-              }}
-              className="btn-primary"
-            >
-              Add Submission
-            </button>
-          </div>
-
-          {error ? (
-            <div className="text-center py-8 text-[--red-600]">
-              {error}
-            </div>
-          ) : submissions.length === 0 ? (
-            <div className="text-center py-8 text-[--gray-600]">
-              No submissions yet. Start by adding one above!
-            </div>
-          ) : (
-            <div className="space-y-6">
-              {submissions.map((submission) => (
-                <SubmissionCard
-                  key={submission.id}
-                  submission={submission}
-                  onVote={(submissionId, value) => {
-                    // In a real implementation, this would call the API
-                    console.log('Vote:', submissionId, value);
-                  }}
-                  onComment={(submissionId) => {
-                    // In a real implementation, this would navigate to the submission detail
-                    console.log('View comments:', submissionId);
-                  }}
-                />
-              ))}
-            </div>
-          )}
-
-          {/* Tags Section */}
-          {tags.length > 0 && (
-            <div className="mt-12 pt-8 border-t border-[--gray-200]">
-              <h3 className="text-xl font-semibold text-[--gray-900] mb-4">Popular Tags</h3>
-              <div className="flex flex-wrap gap-2">
-                {tags.slice(0, 20).map((tag, index) => (
-                  <span
-                    key={index}
-                    className="px-3 py-1 bg-[--gray-100] text-[--gray-700] text-sm rounded-full"
-                  >
-                    {tag.name} ({tag.count})
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+        <ResourcesClient 
+          initialSubmissions={submissions.submissions || []}
+          initialTags={tags.tags || []}
+          initialBases={bases}
+          session={session}
+        />
       </main>
 
       <footer className="bg-[--gray-100] border-t border-[--gray-200] py-12 mt-16">
@@ -194,3 +71,5 @@ export default async function ResourcesPage() {
     </div>
   );
 }
+
+export default ResourcesLayout;

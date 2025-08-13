@@ -5,24 +5,29 @@ const prisma = new PrismaClient();
 
 export async function GET() {
   try {
-    // Test basic database connection
+    // Test database connection
     await prisma.$connect();
     
-    // Test if we can query the User table (which should exist)
+    // Test basic query
     const userCount = await prisma.user.count();
+    const baseCount = await prisma.base.count();
+    const submissionCount = await prisma.submission.count();
     
-    return NextResponse.json({ 
-      status: 'success', 
+    return NextResponse.json({
+      success: true,
       message: 'Database connection successful',
-      userCount 
+      counts: {
+        users: userCount,
+        bases: baseCount,
+        submissions: submissionCount
+      }
     });
   } catch (error) {
-    console.error('Database connection error:', error);
-    return NextResponse.json({ 
-      status: 'error', 
-      message: 'Database connection failed',
-      error: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
+    console.error('Database test failed:', error);
+    return NextResponse.json(
+      { success: false, error: 'Database connection failed' },
+      { status: 500 }
+    );
   } finally {
     await prisma.$disconnect();
   }

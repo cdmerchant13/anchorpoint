@@ -54,11 +54,11 @@ export default async function DashboardPage() {
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="card-accent">
               <h3 className="text-xl font-bold text-[--gray-900] mb-2">Resource Library</h3>
-              <p className="text-[--gray-700] mb-4">Share and discover insights about military bases from fellow spouses.</p>
-              <Link href="/resources" className="btn-primary inline-block">Browse Library</Link>
+              <p className="text-[--gray-700] mb-4">Browse and share insights about military bases.</p>
+              <Link href="/resources" className="btn-primary inline-block">View Library</Link>
             </div>
             
             <div className="card-accent">

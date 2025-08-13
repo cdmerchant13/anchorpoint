@@ -220,14 +220,20 @@ This project follows agentic coding principles to ensure consistent development 
 - **Data Migration**: Plan for tag consolidation and synonym resolution
 - **User Experience**: Implement tag search and filtering capabilities
 
-### 🚧 Module 5: Community Features (Planned)
+### 🚧 Module 5: Enhanced Community Features (Planned)
 - Discussion forums and groups
 - Resource sharing and recommendations
 - Community events and meetups
 - Direct messaging between users
+- Comment notifications system
+- User profiles with activity tracking
 
 ### 🚧 Module 6: Advanced Features (Planned)
 - Identity verification (ID.me integration)
 - Sponsored content and monetization hooks
 - PWA (Progressive Web App) capabilities
-- Search optimizations
+- Advanced search functionality
+- Content moderation system
+- Bulk base import from military databases
+- AI-powered content recommendations
+- User reputation system

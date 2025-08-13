@@ -12,11 +12,13 @@ interface Comment {
 
 interface CommentsSectionProps {
   submissionId: string;
+  comments: Comment[];
+  session: any;
   className?: string;
 }
 
-export default function CommentsSection({ submissionId, className = '' }: CommentsSectionProps) {
-  const [comments, setComments] = useState<Comment[]>([]);
+export default function CommentsSection({ submissionId, comments: initialComments, session, className = '' }: CommentsSectionProps) {
+  const [comments, setComments] = useState<Comment[]>(initialComments || []);
   const [newComment, setNewComment] = useState('');
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
@@ -24,8 +26,11 @@ export default function CommentsSection({ submissionId, className = '' }: Commen
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    fetchComments();
-  }, [submissionId]);
+    // Only fetch if no initial comments provided
+    if (!initialComments) {
+      fetchComments();
+    }
+  }, [submissionId, initialComments]);
 
   const fetchComments = async () => {
     try {
@@ -43,6 +48,12 @@ export default function CommentsSection({ submissionId, className = '' }: Commen
 
   const handleSubmitComment = async (e: React.FormEvent, parentId?: string) => {
     e.preventDefault();
+    
+    // Check if user is authenticated
+    if (!session?.user?.id) {
+      alert('Please sign in to post comments');
+      return;
+    }
     
     const text = parentId ? replyText : newComment;
     if (!text.trim()) return;
@@ -146,7 +157,7 @@ export default function CommentsSection({ submissionId, className = '' }: Commen
     </div>
   );
 
-  if (loading) {
+  if (loading && !initialComments) {
     return (
       <div className={className}>
         <div className="text-center py-8">Loading comments...</div>
