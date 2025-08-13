@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 
 interface Base {
   id: string;
@@ -29,6 +30,7 @@ export default function BaseSelector({
   const [newBaseName, setNewBaseName] = useState('');
   const [newBaseLocation, setNewBaseLocation] = useState('');
   const [creating, setCreating] = useState(false);
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     fetchBases();
@@ -53,9 +55,13 @@ export default function BaseSelector({
 
     setCreating(true);
     try {
+      // Include credentials for authentication
       const response = await fetch('/api/bases', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
         body: JSON.stringify({
           name: newBaseName.trim(),
           location: newBaseLocation.trim()
@@ -73,6 +79,9 @@ export default function BaseSelector({
         if (onCreateNew) {
           onCreateNew(newBase.name, newBase.location);
         }
+      } else {
+        const errorData = await response.json();
+        console.error('Error creating base:', errorData);
       }
     } catch (error) {
       console.error('Error creating base:', error);
@@ -80,6 +89,9 @@ export default function BaseSelector({
       setCreating(false);
     }
   };
+
+  // Don't show create button if user is not authenticated
+  const canCreateBase = status === 'authenticated';
 
   if (loading) {
     return (
@@ -105,7 +117,7 @@ export default function BaseSelector({
           ))}
         </select>
         
-        {onCreateNew && (
+        {onCreateNew && canCreateBase && (
           <button
             type="button"
             onClick={() => setShowCreateForm(!showCreateForm)}

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import SubmissionCard from '@/components/SubmissionCard';
+import BaseSelector from '@/components/BaseSelector';
 
 interface Submission {
   id: string;
@@ -149,6 +150,7 @@ export default function ResourcesClient({
       const response = await fetch('/api/bases', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ name: name.trim(), location: location.trim() })
       });
 
@@ -162,42 +164,6 @@ export default function ResourcesClient({
     } catch (error) {
       console.error('Error creating base:', error);
       throw error;
-    }
-  };
-
-  const handleCreateNewBase = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    const name = newBaseName.trim();
-    const location = newBaseLocation.trim();
-    
-    if (!name || !location) {
-      setBaseError('Please fill in both name and location');
-      return;
-    }
-
-    setCreatingBase(true);
-    setBaseError(null);
-    
-    try {
-      const newBase = await handleCreateBase(name, location);
-      
-      // Reset form and close modal
-      setNewBaseName('');
-      setNewBaseLocation('');
-      setShowCreateBaseModal(false);
-      
-      // Auto-select the newly created base
-      setSelectedBaseId(newBase.id);
-      await fetchSubmissions(newBase.id);
-      
-      // Show success feedback
-      setSuccessMessage(`Base "${newBase.name}" created successfully!`);
-      setTimeout(() => setSuccessMessage(''), 3000);
-    } catch (error) {
-      setBaseError('Failed to create base. Please try again.');
-    } finally {
-      setCreatingBase(false);
     }
   };
 
@@ -284,11 +250,6 @@ export default function ResourcesClient({
   const [processing, setProcessing] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
-  const [baseError, setBaseError] = useState<string | null>(null);
-  const [showCreateBaseModal, setShowCreateBaseModal] = useState(false);
-  const [newBaseName, setNewBaseName] = useState('');
-  const [newBaseLocation, setNewBaseLocation] = useState('');
-  const [creatingBase, setCreatingBase] = useState(false);
 
   // Show loading state during initial load
   if (!initialLoadComplete && loading) {
@@ -335,32 +296,11 @@ export default function ResourcesClient({
           <label className="block text-sm font-medium text-[--gray-700] mb-2">
             Select a Base
           </label>
-          <div className="flex gap-2">
-            <div className="flex gap-2">
-              <select
-                value={selectedBaseId || ''}
-                onChange={(e) => handleBaseSelect(e.target.value || null)}
-                className="flex-1 p-2 border border-[--gray-300] rounded-md bg-[--primary-white]"
-                disabled={loading}
-              >
-                <option value="">All bases</option>
-                {bases.map((base) => (
-                  <option key={base.id} value={base.id}>
-                    {base.name} ({base.location})
-                  </option>
-                ))}
-              </select>
-              <button
-                type="button"
-                onClick={() => setShowCreateBaseModal(true)}
-                className="btn-tertiary px-4 py-2 whitespace-nowrap"
-                title="Add new base"
-                disabled={loading}
-              >
-                + Add Base
-              </button>
-            </div>
-          </div>
+          <BaseSelector 
+            selectedBase={selectedBaseId || ''}
+            onBaseSelect={(baseId) => handleBaseSelect(baseId || null)}
+            onCreateNew={handleCreateBase}
+          />
         </div>
       </div>
 
@@ -519,89 +459,7 @@ export default function ResourcesClient({
       )}
 
       {/* Base Creation Modal */}
-      {showCreateBaseModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-[--primary-white] rounded-lg p-6 w-full max-w-md">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">Add New Base</h3>
-              <button
-                onClick={() => setShowCreateBaseModal(false)}
-                className="text-[--gray-500] hover:text-[--gray-700]"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            
-            {baseError && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700">
-                {baseError}
-              </div>
-            )}
-            
-            <form onSubmit={handleCreateNewBase} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-[--gray-700] mb-1">
-                  Base Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={newBaseName}
-                  onChange={(e) => setNewBaseName(e.target.value)}
-                  placeholder="e.g., Fort Bragg"
-                  className="w-full p-2 border border-[--gray-300] rounded-md focus:ring-2 focus:ring-[--primary-blue] focus:border-transparent"
-                  required
-                  disabled={creatingBase}
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-[--gray-700] mb-1">
-                  Location <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={newBaseLocation}
-                  onChange={(e) => setNewBaseLocation(e.target.value)}
-                  placeholder="e.g., North Carolina"
-                  className="w-full p-2 border border-[--gray-300] rounded-md focus:ring-2 focus:ring-[--primary-blue] focus:border-transparent"
-                  required
-                  disabled={creatingBase}
-                />
-              </div>
-              
-              <div className="flex justify-end gap-2 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowCreateBaseModal(false)}
-                  className="btn-tertiary px-4 py-2"
-                  disabled={creatingBase}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={creatingBase}
-                  className="btn-primary px-4 py-2 disabled:opacity-50 flex items-center gap-2"
-                >
-                  {creatingBase ? (
-                    <>
-                      <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Creating...
-                    </>
-                  ) : (
-                    'Create Base'
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* Removed: Using BaseSelector component instead */}
 
       {/* Tags Section */}
       {tags.length > 0 && (

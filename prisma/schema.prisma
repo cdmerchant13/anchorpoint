@@ -32,6 +32,8 @@ model Base {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   submissions Submission[]
+  
+  @@unique([name, location]) // Ensure base name and location combination is unique
 }
 
 model Submission {

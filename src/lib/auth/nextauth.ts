@@ -49,12 +49,18 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    async session({ session, user, token }) {
-      if (session.user) {
-        session.user.id = user?.id || token?.sub || '';
-        session.user.dutyStation = user?.dutyStation || (token as any)?.dutyStation || '';
+    async session({ session, token }) {
+      if (session.user && token) {
+        session.user.id = token.sub || '';
+        session.user.dutyStation = (token as any).dutyStation || '';
       }
       return session;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.dutyStation = user.dutyStation;
+      }
+      return token;
     }
   },
   session: {

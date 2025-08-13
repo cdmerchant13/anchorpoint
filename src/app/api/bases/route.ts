@@ -3,6 +3,20 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/nextauth';
 import { prisma } from '@/lib/prisma';
 
+// Helper function to set CORS headers
+function setCORSHeaders(response: NextResponse) {
+  response.headers.set('Access-Control-Allow-Origin', '*');
+  response.headers.set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  return response;
+}
+
+// OPTIONS /api/bases - Handle CORS preflight requests
+export async function OPTIONS() {
+  const response = new NextResponse(null, { status: 204 });
+  return setCORSHeaders(response);
+}
+
 // GET /api/bases - Get all bases
 export async function GET() {
   try {
@@ -15,13 +29,15 @@ export async function GET() {
       }
     });
 
-    return NextResponse.json(bases);
+    const response = NextResponse.json(bases);
+    return setCORSHeaders(response);
   } catch (error) {
     console.error('Error fetching bases:', error);
-    return NextResponse.json(
+    const response = NextResponse.json(
       { error: 'Failed to fetch bases: ' + (error as Error).message },
       { status: 500 }
     );
+    return setCORSHeaders(response);
   }
 }
 
@@ -31,19 +47,21 @@ export async function POST(request: NextRequest) {
     const session = await getServerSession(authOptions);
     
     if (!session) {
-      return NextResponse.json(
+      const response = NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       );
+      return setCORSHeaders(response);
     }
 
     const { name, location } = await request.json();
 
     if (!name || !location) {
-      return NextResponse.json(
+      const response = NextResponse.json(
         { error: 'Name and location are required' },
         { status: 400 }
       );
+      return setCORSHeaders(response);
     }
 
     // Improved duplicate detection - check for exact name AND location match
@@ -55,10 +73,11 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingBase) {
-      return NextResponse.json(
+      const response = NextResponse.json(
         { error: 'A base with this name and location already exists' },
         { status: 409 }
       );
+      return setCORSHeaders(response);
     }
 
     const base = await prisma.base.create({
@@ -68,12 +87,14 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    return NextResponse.json(base, { status: 201 });
+    const response = NextResponse.json(base, { status: 201 });
+    return setCORSHeaders(response);
   } catch (error) {
     console.error('Error creating base:', error);
-    return NextResponse.json(
+    const response = NextResponse.json(
       { error: 'Failed to create base: ' + (error as Error).message },
       { status: 500 }
     );
+    return setCORSHeaders(response);
   }
 }
