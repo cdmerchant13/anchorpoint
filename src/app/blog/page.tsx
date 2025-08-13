@@ -3,20 +3,6 @@ import Link from 'next/link';
 export default function Blog() {
   return (
     <div className="min-h-screen bg-[--gray-50]">
-      <header className="bg-[--primary-white] border-b border-[--gray-200]">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-[--primary-blue]">AnchorPoint</h1>
-          <nav>
-            <ul className="flex space-x-6">
-              <li><Link href="/" className="text-[--primary-blue] hover:text-[--secondary-blue-light]">Home</Link></li>
-              <li><Link href="/about" className="text-[--primary-blue] hover:text-[--secondary-blue-light]">About</Link></li>
-              <li><Link href="/blog" className="text-[--primary-blue] hover:text-[--secondary-blue-light]">Blog</Link></li>
-              <li><Link href="/login" className="btn-primary">Login</Link></li>
-            </ul>
-          </nav>
-        </div>
-      </header>
-
       <main className="container mx-auto px-4 py-12">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h1 className="text-4xl md:text-5xl font-bold text-[--gray-900] mb-6">
@@ -78,19 +64,17 @@ export default function Blog() {
         </div>
 
         <div className="text-center mt-16">
-          <Link href="/signup" className="btn-primary inline-block">
+          <Link href="/auth/register" className="btn-primary inline-block">
             Join Our Community for More Insights
           </Link>
         </div>
       </main>
 
       <footer className="bg-[--gray-100] border-t border-[--gray-200] py-12 mt-16">
-        <div className="container mx-auto px-4">
-          <div className="text-center">
-            <p className="text-[--gray-600]">
-              &copy; {new Date().getFullYear()} AnchorPoint. All rights reserved.
-            </p>
-          </div>
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-[--gray-600]">
+            &copy; {new Date().getFullYear()} AnchorPoint. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>
