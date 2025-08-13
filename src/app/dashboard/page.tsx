@@ -1,9 +1,15 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/nextauth';
+import { redirect } from 'next/navigation';
 import Link from 'next/link';
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
+
+  // Redirect to login if not authenticated
+  if (!session) {
+    redirect('/auth/login');
+  }
 
   return (
     <div className="max-w-4xl mx-auto">

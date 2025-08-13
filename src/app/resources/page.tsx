@@ -1,7 +1,12 @@
 import ResourcesClient from '@/components/ResourcesClient';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth/nextauth';
 
 // Server component for layout and data fetching
 async function ResourcesPage() {
+  // Get session
+  const session = await getServerSession(authOptions);
+  
   // Fetch initial data with proper error handling
   let submissions = { submissions: [] };
   let tags = { tags: [] };
@@ -46,7 +51,7 @@ async function ResourcesPage() {
         initialSubmissions={submissions.submissions || []}
         initialTags={tags.tags || []}
         initialBases={bases}
-        session={null} // Session will be handled by the layout
+        session={session}
       />
     </div>
   );
