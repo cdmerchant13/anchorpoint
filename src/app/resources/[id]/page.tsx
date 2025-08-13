@@ -1,5 +1,7 @@
 import { redirect } from 'next/navigation';
 import CommentsSection from '@/components/CommentsSection';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth/nextauth';
 
 interface SubmissionDetailPageProps {
   params: {
@@ -11,16 +13,12 @@ interface SubmissionDetailPageProps {
 async function SubmissionDetailPage({ params }: SubmissionDetailPageProps) {
   const { id } = params;
 
-  // Check authentication on the server side
-  const sessionResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/auth/session`, {
-    cache: 'no-store'
-  });
+  // Check authentication on the server side using NextAuth
+  const session = await getServerSession(authOptions);
 
-  if (!sessionResponse.ok) {
+  if (!session) {
     redirect('/auth/login');
   }
-
-  const session = await sessionResponse.json();
 
   // Fetch submission details using dedicated endpoint
   const submissionResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/submissions/${id}`, {

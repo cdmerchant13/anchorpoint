@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
 
 interface Base {
   id: string;
@@ -16,13 +15,15 @@ interface BaseSelectorProps {
   onBaseSelect: (baseId: string | null) => void;
   onCreateNew?: (name: string, location: string) => void;
   className?: string;
+  session?: any;
 }
 
 export default function BaseSelector({ 
   selectedBase, 
   onBaseSelect, 
   onCreateNew, 
-  className = '' 
+  className = '',
+  session
 }: BaseSelectorProps) {
   const [bases, setBases] = useState<Base[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,7 +31,7 @@ export default function BaseSelector({
   const [newBaseName, setNewBaseName] = useState('');
   const [newBaseLocation, setNewBaseLocation] = useState('');
   const [creating, setCreating] = useState(false);
-  const { data: session, status } = useSession();
+  const isAuthenticated = session?.user?.id;
 
   useEffect(() => {
     fetchBases();
@@ -91,7 +92,7 @@ export default function BaseSelector({
   };
 
   // Don't show create button if user is not authenticated
-  const canCreateBase = status === 'authenticated';
+  const canCreateBase = isAuthenticated;
 
   if (loading) {
     return (

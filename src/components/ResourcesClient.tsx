@@ -300,6 +300,7 @@ export default function ResourcesClient({
             selectedBase={selectedBaseId || ''}
             onBaseSelect={(baseId) => handleBaseSelect(baseId || null)}
             onCreateNew={handleCreateBase}
+            session={session}
           />
         </div>
       </div>
