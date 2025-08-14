@@ -19,8 +19,10 @@ This is a static export of the AnchorPoint application, designed to work without
 - Authentication is mocked for demonstration purposes
 
 ### 3. Dependencies
-- Removed server-side only packages (Prisma, bcryptjs, neo4j-driver, pg, openai)
-- Kept only frontend dependencies (React, Next.js, Tailwind CSS, etc.)
+- **Removed all server-side packages**: Prisma, @prisma/client, @prisma/cli, bcryptjs, openai, neo4j-driver, pg
+- **Removed all backend auth libraries**: NextAuth.js (replaced with simple JWT-based mock authentication)
+- **Kept only frontend dependencies**: React, Next.js, Tailwind CSS, TypeScript, etc.
+- **No database drivers or filesystem access packages remain**
 
 ## GitHub Pages Deployment
 
