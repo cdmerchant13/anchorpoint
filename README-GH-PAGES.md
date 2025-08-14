@@ -62,6 +62,7 @@ npm run export
 - **Missing dependencies**: Run `npm ci` to install all dependencies
 - **Dynamic routes**: Ensure no dynamic routes exist in the app directory
 - **bcryptjs dependency error**: The frontend-isolated branch uses mock authentication, so `bcryptjs` has been replaced with mock implementations in `src/lib/auth/password.ts`
+- **Prisma/database errors**: The frontend-isolated branch has all Prisma/database code removed. The `prisma/` directory and related files have been deleted, and authentication uses a simple JWT-based approach without database adapters.
 
 #### Deployment Issues
 - **Permissions**: The workflow needs write permissions for GitHub Pages

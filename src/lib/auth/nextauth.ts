@@ -1,13 +1,9 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import { prisma } from '@/lib/prisma';
-import bcrypt from 'bcryptjs';
 import { NextAuthOptions } from 'next-auth';
-import { Adapter } from 'next-auth/adapters';
 
+// Simple mock authentication for frontend-isolated branch
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma) as Adapter,
   providers: [
     CredentialsProvider({
       name: 'credentials',
@@ -20,30 +16,22 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email
-          }
-        });
-
-        if (!user || !user.password) {
-          return null;
+        // Mock authentication - always return a demo user for valid credentials
+        if (credentials.email === 'demo@example.com' && credentials.password === 'demo') {
+          return {
+            id: '1',
+            email: 'demo@example.com',
+            name: 'Demo User',
+            dutyStation: 'Fort Bragg, NC'
+          };
         }
 
-        const isPasswordValid = await bcrypt.compare(
-          credentials.password,
-          user.password
-        );
-
-        if (!isPasswordValid) {
-          return null;
-        }
-
+        // For any other credentials, create a new mock user
         return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          dutyStation: user.dutyStation
+          id: String(Date.now()),
+          email: credentials.email,
+          name: credentials.email.split('@')[0],
+          dutyStation: 'Unknown Base'
         };
       }
     })
@@ -68,7 +56,7 @@ export const authOptions: NextAuthOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
     updateAge: 24 * 60 * 60, // 24 hours
   },
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
   pages: {
     signIn: '/auth/login',
     newUser: '/auth/register'
