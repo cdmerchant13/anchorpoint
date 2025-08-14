@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import SubmissionCard from '@/components/SubmissionCard';
 import BaseSelector from '@/components/BaseSelector';
+import { mockApi, mockDelay } from '@/lib/mock/api';
 
 interface Submission {
   id: string;
@@ -51,6 +52,9 @@ export default function ResourcesClient({
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
 
+  // Use the session prop if available, otherwise use the session from useSession
+  const currentSession = propSession || session;
+
   // Initialize with loading state if we have no initial data
   const [initialLoadComplete, setInitialLoadComplete] = useState(initialSubmissions.length > 0);
 
@@ -66,29 +70,55 @@ export default function ResourcesClient({
     setError(null);
     
     try {
-      // Use Promise.allSettled to handle partial failures gracefully
-      const [submissionsResponse, tagsResponse, basesResponse] = await Promise.allSettled([
-        fetch('/api/submissions', { cache: 'no-store' }),
-        fetch('/api/tags', { cache: 'no-store' }),
-        fetch('/api/bases', { cache: 'no-store' })
+      // Use mock API instead of real API calls
+      await mockDelay(500); // Simulate network delay
+      
+      // Fetch all data in parallel
+      const [submissionsResult, tagsResult, basesResult] = await Promise.all([
+        mockApi.getSubmissions(),
+        Promise.resolve({ success: true, data: [{ name: 'healthcare', count: 15 }, { name: 'food', count: 12 }, { name: 'housing', count: 8 }] }), // Mock tags
+        mockApi.getBases()
       ]);
 
       // Handle submissions response
-      if (submissionsResponse.status === 'fulfilled' && submissionsResponse.value.ok) {
-        const submissionsData = await submissionsResponse.value.json();
-        setSubmissions(submissionsData.submissions || []);
+      if (submissionsResult.success) {
+        // Convert mock data to match expected format
+        const formattedSubmissions = submissionsResult.data.map((sub: any) => ({
+          id: String(sub.id),
+          baseId: String(sub.baseId),
+          userId: '1',
+          rawText: sub.content,
+          processedJson: JSON.stringify({
+            processedText: sub.content,
+            tags: sub.tags
+          }),
+          createdAt: sub.createdAt.toISOString(),
+          updatedAt: sub.createdAt.toISOString(),
+          base: bases.find(b => b.id === String(sub.baseId)) || { id: String(sub.baseId), name: 'Unknown Base', location: 'Unknown' },
+          user: { id: '1', name: sub.author },
+          voteScore: sub.voteCount,
+          userVote: 0,
+          _count: { votes: sub.voteCount, comments: sub.commentCount }
+        }));
+        setSubmissions(formattedSubmissions);
       }
 
       // Handle tags response
-      if (tagsResponse.status === 'fulfilled' && tagsResponse.value.ok) {
-        const tagsData = await tagsResponse.value.json();
-        setTags(tagsData.tags || []);
+      if (tagsResult.success) {
+        setTags(tagsResult.data);
       }
 
       // Handle bases response
-      if (basesResponse.status === 'fulfilled' && basesResponse.value.ok) {
-        const basesData = await basesResponse.value.json();
-        setBases(basesData);
+      if (basesResult.success) {
+        // Convert mock data to match expected format
+        const formattedBases = basesResult.data.map((base: any) => ({
+          id: String(base.id),
+          name: base.name,
+          location: `${base.branch}, ${base.state}`,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        }));
+        setBases(formattedBases);
       }
       
       setInitialLoadComplete(true);
@@ -102,16 +132,10 @@ export default function ResourcesClient({
 
   const handleVote = async (submissionId: string, value: number) => {
     try {
-      const method = value === 0 ? 'DELETE' : 'POST';
-      const response = await fetch('/api/votes', {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: value === 0 
-          ? JSON.stringify({ submissionId })
-          : JSON.stringify({ submissionId, value })
-      });
-
-      if (response.ok) {
+      await mockDelay(300); // Simulate network delay
+      const result = await mockApi.createVote(Number(submissionId));
+      
+      if (result.success) {
         // Update local state
         setSubmissions(prev => prev.map(sub => {
           if (sub.id === submissionId) {
@@ -128,7 +152,7 @@ export default function ResourcesClient({
           return sub;
         }));
       } else {
-        console.error('Vote API error:', response.status);
+        console.error('Vote API error:', result.error);
       }
     } catch (error) {
       console.error('Error voting:', error);
@@ -149,21 +173,23 @@ export default function ResourcesClient({
 
   const handleCreateBase = async (name: string, location: string) => {
     try {
-      const response = await fetch('/api/bases', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ name: name.trim(), location: location.trim() })
-      });
-
-      if (response.ok) {
-        const newBase = await response.json();
+      await mockDelay(500); // Simulate network delay
+      const result = await mockApi.createBase({ name: name.trim(), location: location.trim() });
+      
+      if (result.success) {
+        // Convert mock data to match expected format
+        const newBase = {
+          id: String(result.data.id),
+          name: result.data.name,
+          location: result.data.location,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
         setBases(prev => [...prev, newBase]);
         return newBase;
       } else {
-        const errorData = await response.json();
-        console.error('Error creating base:', errorData);
-        throw new Error(errorData.error || 'Failed to create base');
+        console.error('Error creating base:', result.error);
+        throw new Error(result.error || 'Failed to create base');
       }
     } catch (error) {
       console.error('Error creating base:', error);
@@ -176,16 +202,31 @@ export default function ResourcesClient({
     setError(null);
     
     try {
-      const url = baseId ? `/api/submissions?baseId=${baseId}` : '/api/submissions';
-      const response = await fetch(url, {
-        cache: 'no-store'
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setSubmissions(data.submissions || []);
+      await mockDelay(500); // Simulate network delay
+      const result = await mockApi.getSubmissions(baseId ? Number(baseId) : undefined);
+      
+      if (result.success) {
+        // Convert mock data to match expected format
+        const formattedSubmissions = result.data.map((sub: any) => ({
+          id: String(sub.id),
+          baseId: String(sub.baseId),
+          userId: '1',
+          rawText: sub.content,
+          processedJson: JSON.stringify({
+            processedText: sub.content,
+            tags: sub.tags
+          }),
+          createdAt: sub.createdAt.toISOString(),
+          updatedAt: sub.createdAt.toISOString(),
+          base: bases.find(b => b.id === String(sub.baseId)) || { id: String(sub.baseId), name: 'Unknown Base', location: 'Unknown' },
+          user: { id: '1', name: sub.author },
+          voteScore: sub.voteCount,
+          userVote: 0,
+          _count: { votes: sub.voteCount, comments: sub.commentCount }
+        }));
+        setSubmissions(formattedSubmissions);
       } else {
-        throw new Error(`Failed to fetch submissions: ${response.status}`);
+        throw new Error('Failed to fetch submissions');
       }
     } catch (error) {
       console.error('Error fetching submissions:', error);
@@ -211,7 +252,6 @@ export default function ResourcesClient({
     }
 
     // Check if user is authenticated
-    const currentSession = propSession || session;
     if (!currentSession?.user?.id) {
       setSubmissionError('Please sign in to submit content');
       return;
@@ -224,16 +264,17 @@ export default function ResourcesClient({
       // Show AI processing indicator
       setProcessing(true);
 
-      // Call submission API with AI processing
-      const response = await fetch('/api/submissions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ baseId, rawText })
+      // Simulate AI processing delay
+      await mockDelay(1500);
+
+      // Use mock API instead of real API
+      const result = await mockApi.createSubmission({
+        baseId: Number(baseId),
+        content: rawText,
+        author: currentSession.user.name || 'Anonymous'
       });
 
-      if (response.ok) {
-        const newSubmission = await response.json();
-        
+      if (result.success) {
         // Reset form
         form.reset();
         setShowSubmissionForm(false);
@@ -245,8 +286,7 @@ export default function ResourcesClient({
         setSuccessMessage('Submission processed successfully!');
         setTimeout(() => setSuccessMessage(''), 3000);
       } else {
-        const errorData = await response.json();
-        setSubmissionError(errorData.error || 'Failed to submit');
+        setSubmissionError(result.error || 'Failed to submit');
       }
     } catch (error) {
       console.error('Error submitting:', error);

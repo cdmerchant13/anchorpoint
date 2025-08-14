@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { hashPassword } from '../../../lib/auth/password';
+import { mockApi, mockDelay } from '@/lib/mock/api';
 
 export default function RegisterPage() {
   const [name, setName] = useState('');
@@ -36,24 +37,17 @@ export default function RegisterPage() {
       // Hash the password
       const hashedPassword = await hashPassword(password);
 
-      // Send registration data to API
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          password: hashedPassword,
-          dutyStation,
-        }),
+      // Use mock API instead of real API
+      await mockDelay(500); // Simulate network delay
+      const result = await mockApi.register({
+        name,
+        email,
+        password: hashedPassword,
+        dutyStation,
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || 'Registration failed');
+      if (!result.success) {
+        throw new Error(result.error || 'Registration failed');
       }
 
       // Redirect to login page

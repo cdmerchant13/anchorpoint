@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { mockApi, mockDelay } from '@/lib/mock/api';
 
 interface Base {
   id: string;
@@ -42,10 +43,19 @@ export default function BaseSelector({
 
   const fetchBases = async () => {
     try {
-      const response = await fetch('/api/bases');
-      if (response.ok) {
-        const data = await response.json();
-        setBases(data);
+      await mockDelay(300); // Simulate network delay
+      const result = await mockApi.getBases();
+      
+      if (result.success) {
+        // Convert mock data to match expected format
+        const formattedBases = result.data.map((base: any) => ({
+          id: String(base.id),
+          name: base.name,
+          location: `${base.branch}, ${base.state}`,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        }));
+        setBases(formattedBases);
       }
     } catch (error) {
       console.error('Error fetching bases:', error);
@@ -59,21 +69,22 @@ export default function BaseSelector({
 
     setCreating(true);
     try {
-      // Include credentials for authentication
-      const response = await fetch('/api/bases', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          name: newBaseName.trim(),
-          location: newBaseLocation.trim()
-        })
+      await mockDelay(500); // Simulate network delay
+      const result = await mockApi.createBase({
+        name: newBaseName.trim(),
+        branch: 'Army', // Default for mock
+        state: newBaseLocation.trim()
       });
-
-      if (response.ok) {
-        const newBase = await response.json();
+      
+      if (result.success) {
+        // Convert mock data to match expected format
+        const newBase = {
+          id: String(result.data.id),
+          name: result.data.name,
+          location: `${result.data.branch}, ${result.data.state}`,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
         setBases(prev => [...prev, newBase]);
         setNewBaseName('');
         setNewBaseLocation('');
@@ -84,9 +95,8 @@ export default function BaseSelector({
           onCreateNew(newBase.name, newBase.location);
         }
       } else {
-        const errorData = await response.json();
-        console.error('Error creating base:', errorData);
-        alert(`Error: ${errorData.error || 'Failed to create base'}`);
+        console.error('Error creating base:', result.error);
+        alert(`Error: ${result.error || 'Failed to create base'}`);
       }
     } catch (error) {
       console.error('Error creating base:', error);

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { mockApi, mockDelay } from '@/lib/mock/api';
 
 interface Comment {
   id: string;
@@ -36,10 +37,18 @@ export default function CommentsSection({ submissionId, comments: initialComment
 
   const fetchComments = async () => {
     try {
-      const response = await fetch(`/api/comments?submissionId=${submissionId}`);
-      if (response.ok) {
-        const data = await response.json();
-        setComments(data);
+      await mockDelay(300); // Simulate network delay
+      const result = await mockApi.getComments(Number(submissionId));
+      
+      if (result.success) {
+        // Convert mock data to match expected format
+        const formattedComments = result.data.map((comment: any) => ({
+          id: String(comment.id),
+          text: comment.content,
+          createdAt: comment.createdAt.toISOString(),
+          user: { id: '1', name: comment.author }
+        }));
+        setComments(formattedComments);
       }
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -64,17 +73,14 @@ export default function CommentsSection({ submissionId, comments: initialComment
     setSubmitting(true);
     
     try {
-      const response = await fetch('/api/comments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          submissionId,
-          text: text.trim(),
-          parentCommentId: parentId || undefined
-        })
+      await mockDelay(300); // Simulate network delay
+      const result = await mockApi.createComment({
+        submissionId: Number(submissionId),
+        content: text.trim(),
+        author: currentSession.user.name || 'Anonymous'
       });
 
-      if (response.ok) {
+      if (result.success) {
         if (parentId) {
           setReplyText('');
           setReplyingTo(null);
@@ -83,9 +89,8 @@ export default function CommentsSection({ submissionId, comments: initialComment
         }
         await fetchComments(); // Refresh comments
       } else {
-        const errorData = await response.json();
-        console.error('Comment submission error:', errorData);
-        alert(`Error: ${errorData.error || 'Failed to submit comment'}`);
+        console.error('Comment submission error:', result.error);
+        alert(`Error: ${result.error || 'Failed to submit comment'}`);
       }
     } catch (error) {
       console.error('Error submitting comment:', error);

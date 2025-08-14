@@ -1,14 +1,32 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth/nextauth';
-import { redirect } from 'next/navigation';
-import Link from 'next/link';
+'use client';
 
-export default async function DashboardPage() {
-  const session = await getServerSession(authOptions);
+import { useMockAuth } from '@/lib/mock/auth';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+
+export default function DashboardPage() {
+  const { data: session, status, loading } = useMockAuth();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Redirect to login if not authenticated
-  if (!session) {
-    redirect('/auth/login');
+  if (!mounted || loading || status === 'loading') {
+    return (
+      <div className="min-h-screen bg-[--gray-50] flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[--primary-blue] mx-auto"></div>
+          <p className="mt-4 text-[--gray-600]">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (status === 'unauthenticated') {
+    window.location.href = '/auth/login';
+    return null;
   }
 
   return (

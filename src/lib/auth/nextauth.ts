@@ -72,6 +72,26 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: '/auth/login',
     newUser: '/auth/register'
+  },
+  cookies: {
+    sessionToken: {
+      name: `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: false // Set to true in production
+      }
+    },
+    callbackUrl: {
+      name: `next-auth.callback-url`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: false // Set to true in production
+      }
+    }
   }
 };
 

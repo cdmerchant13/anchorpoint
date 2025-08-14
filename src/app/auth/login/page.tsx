@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react';
+import { useMockAuth } from '@/lib/mock/auth';
 import Link from 'next/link';
 
 export default function LoginPage() {
@@ -11,6 +11,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { signIn } = useMockAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,20 +19,18 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      });
+      const result = await signIn({ email, password });
 
-      if (result?.error) {
-        setError('Invalid email or password');
-      } else {
+      if (result.success) {
         // Use window.location instead of router.push to avoid headers() issue
-        window.location.href = '/resources';
+        window.location.href = '/dashboard';
+      } else {
+        setError(result.error || 'Login failed. Please try again.');
+        console.error('Sign in error:', result.error);
       }
     } catch (err) {
-      setError('An unexpected error occurred');
+      console.error('Login error:', err);
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
