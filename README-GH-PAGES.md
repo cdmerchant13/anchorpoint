@@ -61,6 +61,7 @@ npm run export
 - **TypeScript errors**: Check for missing imports or type mismatches
 - **Missing dependencies**: Run `npm ci` to install all dependencies
 - **Dynamic routes**: Ensure no dynamic routes exist in the app directory
+- **bcryptjs dependency error**: The frontend-isolated branch uses mock authentication, so `bcryptjs` has been replaced with mock implementations in `src/lib/auth/password.ts`
 
 #### Deployment Issues
 - **Permissions**: The workflow needs write permissions for GitHub Pages
