@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 
 interface Base {
   id: string;
@@ -23,15 +24,17 @@ export default function BaseSelector({
   onBaseSelect, 
   onCreateNew, 
   className = '',
-  session
+  session: propSession
 }: BaseSelectorProps) {
+  const { data: session } = useSession();
   const [bases, setBases] = useState<Base[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newBaseName, setNewBaseName] = useState('');
   const [newBaseLocation, setNewBaseLocation] = useState('');
   const [creating, setCreating] = useState(false);
-  const isAuthenticated = session?.user?.id;
+  const currentSession = propSession || session;
+  const isAuthenticated = currentSession?.user?.id;
 
   useEffect(() => {
     fetchBases();
@@ -83,9 +86,11 @@ export default function BaseSelector({
       } else {
         const errorData = await response.json();
         console.error('Error creating base:', errorData);
+        alert(`Error: ${errorData.error || 'Failed to create base'}`);
       }
     } catch (error) {
       console.error('Error creating base:', error);
+      alert('Failed to create base. Please try again.');
     } finally {
       setCreating(false);
     }

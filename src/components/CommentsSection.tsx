@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 
 interface Comment {
   id: string;
@@ -13,11 +14,12 @@ interface Comment {
 interface CommentsSectionProps {
   submissionId: string;
   comments: Comment[];
-  session: any;
+  session?: any;
   className?: string;
 }
 
-export default function CommentsSection({ submissionId, comments: initialComments, session, className = '' }: CommentsSectionProps) {
+export default function CommentsSection({ submissionId, comments: initialComments, session: propSession, className = '' }: CommentsSectionProps) {
+  const { data: session } = useSession();
   const [comments, setComments] = useState<Comment[]>(initialComments || []);
   const [newComment, setNewComment] = useState('');
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
@@ -50,7 +52,8 @@ export default function CommentsSection({ submissionId, comments: initialComment
     e.preventDefault();
     
     // Check if user is authenticated
-    if (!session?.user?.id) {
+    const currentSession = propSession || session;
+    if (!currentSession?.user?.id) {
       alert('Please sign in to post comments');
       return;
     }
@@ -79,9 +82,14 @@ export default function CommentsSection({ submissionId, comments: initialComment
           setNewComment('');
         }
         await fetchComments(); // Refresh comments
+      } else {
+        const errorData = await response.json();
+        console.error('Comment submission error:', errorData);
+        alert(`Error: ${errorData.error || 'Failed to submit comment'}`);
       }
     } catch (error) {
       console.error('Error submitting comment:', error);
+      alert('Failed to submit comment. Please try again.');
     } finally {
       setSubmitting(false);
     }

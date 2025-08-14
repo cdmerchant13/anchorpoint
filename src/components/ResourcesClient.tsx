@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import SubmissionCard from '@/components/SubmissionCard';
 import BaseSelector from '@/components/BaseSelector';
 
@@ -31,15 +32,16 @@ interface ResourcesClientProps {
   initialSubmissions: Submission[];
   initialTags: { name: string; count: number }[];
   initialBases: Base[];
-  session: any;
+  session?: any;
 }
 
 export default function ResourcesClient({ 
   initialSubmissions, 
   initialTags, 
   initialBases,
-  session
+  session: propSession
 }: ResourcesClientProps) {
+  const { data: session } = useSession();
   const [submissions, setSubmissions] = useState<Submission[]>(initialSubmissions);
   const [tags, setTags] = useState(initialTags);
   const [bases, setBases] = useState(initialBases);
@@ -135,7 +137,7 @@ export default function ResourcesClient({
   };
 
   const handleComment = (submissionId: string) => {
-    // Navigate to submission detail page
+    // Navigate to authenticated submission detail page
     window.location.href = `/resources/${submissionId}`;
   };
 
@@ -159,7 +161,9 @@ export default function ResourcesClient({
         setBases(prev => [...prev, newBase]);
         return newBase;
       } else {
-        throw new Error('Failed to create base');
+        const errorData = await response.json();
+        console.error('Error creating base:', errorData);
+        throw new Error(errorData.error || 'Failed to create base');
       }
     } catch (error) {
       console.error('Error creating base:', error);
@@ -203,6 +207,13 @@ export default function ResourcesClient({
     
     if (!baseId || !rawText) {
       setSubmissionError('Please select a base and enter your submission');
+      return;
+    }
+
+    // Check if user is authenticated
+    const currentSession = propSession || session;
+    if (!currentSession?.user?.id) {
+      setSubmissionError('Please sign in to submit content');
       return;
     }
 
@@ -300,7 +311,7 @@ export default function ResourcesClient({
             selectedBase={selectedBaseId || ''}
             onBaseSelect={(baseId) => handleBaseSelect(baseId || null)}
             onCreateNew={handleCreateBase}
-            session={session}
+            session={propSession || session}
           />
         </div>
       </div>
