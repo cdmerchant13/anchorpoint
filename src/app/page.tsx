@@ -36,10 +36,10 @@ export default function Home() {
               and felt at home anywhere the military sends them.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link href="/auth/register" className="btn-primary text-center px-8 py-4 text-lg">
+              <Link href="./auth/register/" className="btn-primary text-center px-8 py-4 text-lg">
                 Join the Community
               </Link>
-              <Link href="/auth/login" className="btn-tertiary text-center px-8 py-4 text-lg">
+              <Link href="./auth/login/" className="btn-tertiary text-center px-8 py-4 text-lg">
                 Sign In
               </Link>
               <Link href="#how-it-works" className="btn-tertiary text-center px-8 py-4 text-lg">
@@ -196,10 +196,10 @@ export default function Home() {
             Join thousands of military spouses who've found their community with AnchorPoint
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link href="/auth/register" className="btn-secondary text-center px-8 py-4 text-lg">
+            <Link href="./auth/register/" className="btn-secondary text-center px-8 py-4 text-lg">
               Create Your Free Account
             </Link>
-            <Link href="/about" className="bg-[--primary-white] text-[--primary-blue] hover:bg-[--gray-100] border border-[--primary-white] rounded-md px-8 py-4 text-lg transition-colors text-center">
+            <Link href="./about/" className="bg-[--primary-white] text-[--primary-blue] hover:bg-[--gray-100] border border-[--primary-white] rounded-md px-8 py-4 text-lg transition-colors text-center">
               Learn More
             </Link>
           </div>
@@ -218,17 +218,17 @@ export default function Home() {
             <div>
               <h4 className="text-lg font-bold text-[--gray-900] mb-4">Navigation</h4>
               <ul className="space-y-2">
-                <li><Link href="/" className="text-[--gray-700] hover:text-[--primary-blue]">Home</Link></li>
-                <li><Link href="/about" className="text-[--gray-700] hover:text-[--primary-blue]">About</Link></li>
-                <li><Link href="/blog" className="text-[--gray-700] hover:text-[--primary-blue]">Blog</Link></li>
-                <li><Link href="/auth/login" className="text-[--gray-700] hover:text-[--primary-blue]">Login</Link></li>
+                <li><Link href="./" className="text-[--gray-700] hover:text-[--primary-blue]">Home</Link></li>
+                <li><Link href="./about/" className="text-[--gray-700] hover:text-[--primary-blue]">About</Link></li>
+                <li><Link href="./blog/" className="text-[--gray-700] hover:text-[--primary-blue]">Blog</Link></li>
+                <li><Link href="./auth/login/" className="text-[--gray-700] hover:text-[--primary-blue]">Login</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="text-lg font-bold text-[--gray-900] mb-4">Legal</h4>
               <ul className="space-y-2">
-                <li><Link href="/privacy" className="text-[--gray-700] hover:text-[--primary-blue]">Privacy Policy</Link></li>
-                <li><Link href="/terms" className="text-[--gray-700] hover:text-[--primary-blue]">Terms of Service</Link></li>
+                <li><Link href="./privacy/" className="text-[--gray-700] hover:text-[--primary-blue]">Privacy Policy</Link></li>
+                <li><Link href="./terms/" className="text-[--gray-700] hover:text-[--primary-blue]">Terms of Service</Link></li>
               </ul>
             </div>
             <div>

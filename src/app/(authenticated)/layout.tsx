@@ -27,9 +27,9 @@ export default function AuthenticatedLayout({
           <h1 className="text-2xl font-bold text-[--primary-blue]">AnchorPoint</h1>
           <nav>
             <ul className="flex space-x-6">
-              <li><Link href="/" className="text-[--primary-blue] hover:text-[--secondary-blue-light]">Home</Link></li>
-              <li><Link href="/dashboard" className="text-[--primary-blue] hover:text-[--secondary-blue-light]">Dashboard</Link></li>
-              <li><Link href="/resources" className="text-[--primary-blue] hover:text-[--secondary-blue-light]">Resources</Link></li>
+              <li><Link href="./" className="text-[--primary-blue] hover:text-[--secondary-blue-light]">Home</Link></li>
+              <li><Link href="./dashboard/" className="text-[--primary-blue] hover:text-[--secondary-blue-light]">Dashboard</Link></li>
+              <li><Link href="./resources/" className="text-[--primary-blue] hover:text-[--secondary-blue-light]">Resources</Link></li>
               <li>
                 <button 
                   onClick={handleLogout}

@@ -1,122 +1,202 @@
-# AnchorPoint - GitHub Pages Deployment
+# AnchorPoint Frontend - GitHub Pages Deployment
 
-This branch (`frontend-isolated`) has been configured for automated deployment to GitHub Pages using GitHub Actions.
+This branch (`frontend-isolated`) has been specifically configured for deployment to GitHub Pages using Next.js static export.
 
-## Project Overview
-
-This is a static export of the AnchorPoint application, designed to work without any backend dependencies. All data is mocked and the application is fully static for deployment to GitHub Pages.
-
-## Key Changes for GitHub Pages
-
-### 1. Static Export Configuration
-- `next.config.js` has been updated with `output: 'export'` for static site generation
-- All API routes have been removed and replaced with mock data
-- Dynamic routes have been removed as they're not compatible with static export
-
-### 2. Mock Data System
-- Created `src/lib/mock/api.ts` with mock data and functions
-- All components now use mock API calls instead of real backend requests
-- Authentication is mocked for demonstration purposes
-
-### 3. Dependencies
-- **Removed all server-side packages**: Prisma, @prisma/client, @prisma/cli, bcryptjs, openai, neo4j-driver, pg
-- **Removed all backend auth libraries**: NextAuth.js (replaced with simple JWT-based mock authentication)
-- **Kept only frontend dependencies**: React, Next.js, Tailwind CSS, TypeScript, etc.
-- **No database drivers or filesystem access packages remain**
-
-## GitHub Pages Deployment
+## 🚀 Deployment
 
 ### Automatic Deployment
-The application is automatically deployed to GitHub Pages when:
-1. Changes are pushed to the `frontend-isolated` branch
-2. Pull requests are made to the `frontend-isolated` branch
 
-### GitHub Actions Workflow
-The `.github/workflows/deploy.yml` file handles:
-- Node.js 18 setup
-- Dependency installation
-- Static build with `npm run export`
-- Upload to GitHub Pages
+This branch is configured for automatic deployment to GitHub Pages via GitHub Actions. Any push to the `frontend-isolated` branch will trigger the deployment workflow.
 
 ### Manual Deployment
-To deploy manually:
-```bash
-# Install dependencies
-npm ci
 
-# Build static export (uses output: 'export' from next.config.js)
-npm run export
+To manually deploy:
 
-# The static files will be in the `out/` directory
+1. Ensure you're on the `frontend-isolated` branch
+2. Run the build command to verify everything works:
+   ```bash
+   npm run export
+   ```
+3. The static files will be generated in the `/out` directory
+
+## 📁 Project Structure
+
+```
+├── src/                    # Source code
+│   ├── app/               # Next.js app router
+│   ├── components/        # React components
+│   ├── lib/               # Utility libraries
+│   │   ├── mock/          # Mock API implementations
+│   │   └── auth/          # Authentication utilities
+│   └── styles/            # CSS styles
+├── public/                # Static assets
+├── out/                   # Generated static export (not in git)
+├── .github/               # GitHub configuration
+│   └── workflows/         # CI/CD workflows
+├── next.config.js         # Next.js configuration
+├── package.json          # Dependencies and scripts
+└── README-GH-PAGES.md    # This file
 ```
 
-**Note**: The `export` script now uses only `next build` since static export is handled by the `output: 'export'` configuration in `next.config.js`. The deprecated `next export` command has been removed.
+## ⚙️ Configuration
 
-## Monitoring Deployment
+### Next.js Static Export
 
-### GitHub Actions Logs
-1. Go to the Actions tab in your GitHub repository
-2. Select the "Deploy to GitHub Pages" workflow
-3. View logs for each deployment run
+The `next.config.js` has been configured for static export:
 
-### Common Issues and Troubleshooting
-
-#### Build Failures
-- **TypeScript errors**: Check for missing imports or type mismatches
-- **Missing dependencies**: Run `npm ci` to install all dependencies
-- **Dynamic routes**: Ensure no dynamic routes exist in the app directory
-- **bcryptjs dependency error**: The frontend-isolated branch uses mock authentication, so `bcryptjs` has been replaced with mock implementations in `src/lib/auth/password.ts`
-- **Prisma/database errors**: The frontend-isolated branch has all Prisma/database code removed. The `prisma/` directory and related files have been deleted, and authentication uses a simple JWT-based approach without database adapters.
-
-#### Deployment Issues
-- **Permissions**: The workflow needs write permissions for GitHub Pages
-- **Branch name**: Ensure you're pushing to the correct branch (`frontend-isolated`)
-- **File size**: GitHub Pages has a 10MB limit per file
-
-#### Runtime Issues
-- **404 errors**: Check that all routes are properly defined in `app/`
-- **Missing assets**: Ensure all static assets are in the `public/` directory
-- **Path issues**: Verify all links use relative paths for static export
-
-## Development Workflow
-
-### Making Changes
-1. Create a new branch from `frontend-isolated`
-2. Make your changes
-3. Test locally with `npm run dev`
-4. Build with `npm run export` to verify static export
-5. Create a pull request to `frontend-isolated`
-
-### Testing Static Export
-Always test the static export before deploying:
-```bash
-npm run export
-# Check the out/ directory for all expected files
+```javascript
+const nextConfig = {
+  output: 'export',
+  trailingSlash: true,
+  images: {
+    unoptimized: true
+  }
+};
 ```
 
-## Environment Variables
+### Key Features
 
-For GitHub Pages deployment, you don't need environment variables since all data is mocked. However, if you need to add any:
+- **Static Export**: The entire site is pre-rendered as static HTML/CSS/JS
+- **Mock APIs**: All backend dependencies have been replaced with mock implementations
+- **Relative Paths**: All links use relative paths for GitHub Pages compatibility
+- **No Server-Side Rendering**: All pages are statically generated at build time
 
-1. Add them to the repository secrets in GitHub
-2. Reference them in your code with `process.env.VAR_NAME`
+## 🔧 Development
 
-## Performance Considerations
+### Prerequisites
 
-- The static export is optimized for performance
-- All images should be optimized for web
-- Consider adding a `public/_headers` file for custom headers if needed
+- Node.js 18+
+- npm or yarn
 
-## Future Enhancements
+### Setup
 
-- Add more comprehensive mock data
-- Implement client-side routing for better navigation
-- Add PWA capabilities for offline access
-- Implement proper error boundaries
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-## Support
+2. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-For issues related to the GitHub Pages deployment:
-1. Check the GitHub Actions logs
-2. Verify the build locally
-3. Create an issue with detailed error information
+3. Build for production:
+   ```bash
+   npm run build
+   ```
+
+4. Export static files:
+   ```bash
+   npm run export
+   ```
+
+### Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run export` - Generate static export
+- `npm run lint` - Run ESLint
+
+## 🌐 GitHub Pages Setup
+
+### Repository Settings
+
+1. Go to your GitHub repository settings
+2. Navigate to "Pages" section
+3. Under "Source", select "Deploy from a branch"
+4. Select the `frontend-isolated` branch
+5. Select the `/ (root)` directory
+6. Click "Save"
+
+### Custom Domain (Optional)
+
+If you want to use a custom domain:
+
+1. Add a `CNAME` file in the `public/` directory with your custom domain
+2. In repository settings, under "Pages", enter your custom domain
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+#### 1. 404 Errors on GitHub Pages
+
+**Problem**: Links are broken after deployment
+
+**Solution**: 
+- Ensure all links use relative paths (starting with `./`)
+- Check that the `next.config.js` has `trailingSlash: true`
+- Verify the GitHub Pages source is set to the `frontend-isolated` branch and root directory
+
+#### 2. Images Not Loading
+
+**Problem**: Images display as broken or don't load
+
+**Solution**:
+- The `next.config.js` has `images: { unoptimized: true }` for static export compatibility
+- Ensure all images are in the `public/` directory
+- Use relative paths for image sources
+
+#### 3. Build Failures
+
+**Problem**: `npm run export` fails
+
+**Solution**:
+- Check for any server-side code that needs to be removed
+- Verify all API calls use mock implementations
+- Ensure no dynamic routes that can't be statically generated
+
+#### 4. CSS/JS Not Loading
+
+**Problem**: Styles or scripts don't apply after deployment
+
+**Solution**:
+- Check that the build process generates files in the `/out` directory
+- Verify the GitHub Pages deployment includes all necessary files
+- Ensure no absolute paths that break on GitHub Pages
+
+### Debugging Tips
+
+1. **Local Testing**: After running `npm run export`, you can test the static files by:
+   ```bash
+   npx serve out
+   ```
+   Then visit `http://localhost:3000`
+
+2. **Check Generated HTML**: Inspect the HTML files in the `/out` directory to verify:
+   - All links are relative
+   - All assets are properly referenced
+   - No server-side code remains
+
+3. **GitHub Actions Logs**: If deployment fails, check the workflow logs in the "Actions" tab of your GitHub repository
+
+## 📝 Contributing
+
+When working on this branch:
+
+1. **Use Mock APIs**: All backend interactions must use the mock implementations in `src/lib/mock/`
+2. **Test Static Export**: Always run `npm run export` to verify changes work in static mode
+3. **Relative Paths**: Use relative paths for all links (`./` instead of `/`)
+4. **No Dynamic Routes**: Avoid routes that require server-side rendering or dynamic data
+
+## 📄 License
+
+This project is part of the AnchorPoint platform. See the main repository for license information.
+
+## 🚀 Deployment Monitoring
+
+After deployment, you can monitor:
+
+1. **GitHub Pages Status**: Check the repository "Pages" section
+2. **GitHub Actions**: View deployment logs in the "Actions" tab
+3. **Site Analytics**: Once deployed, you can add analytics tools to monitor traffic
+
+## 🔄 Updates
+
+To update the deployed site:
+
+1. Make changes to the `frontend-isolated` branch
+2. Commit and push your changes
+3. The GitHub Actions workflow will automatically deploy the updated site
+4. Monitor the Actions tab for deployment status

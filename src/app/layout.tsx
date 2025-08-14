@@ -22,10 +22,10 @@ export default function RootLayout({
               <h1 className="text-2xl font-bold text-[--primary-blue]">AnchorPoint</h1>
               <nav>
                 <ul className="flex space-x-6">
-                  <li><Link href="/" className="text-[--primary-blue] hover:text-[--secondary-blue-light]">Home</Link></li>
-                  <li><Link href="/about" className="text-[--primary-blue] hover:text-[--secondary-blue-light]">About</Link></li>
-                  <li><Link href="/blog" className="text-[--primary-blue] hover:text-[--secondary-blue-light]">Blog</Link></li>
-                  <li><Link href="/auth/login" className="text-[--primary-blue] hover:text-[--secondary-blue-light]">Login</Link></li>
+                  <li><Link href="./" className="text-[--primary-blue] hover:text-[--secondary-blue-light]">Home</Link></li>
+                  <li><Link href="./about/" className="text-[--primary-blue] hover:text-[--secondary-blue-light]">About</Link></li>
+                  <li><Link href="./blog/" className="text-[--primary-blue] hover:text-[--secondary-blue-light]">Blog</Link></li>
+                  <li><Link href="./auth/login/" className="text-[--primary-blue] hover:text-[--secondary-blue-light]">Login</Link></li>
                 </ul>
               </nav>
             </div>

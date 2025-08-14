@@ -9,6 +9,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  basePath: process.env.NODE_ENV === 'production' ? '/anchorpoint' : '',
   assetPrefix: process.env.NODE_ENV === 'production' ? '/anchorpoint' : '',
   experimental: {
     // Enable if you have dynamic routes that need to be pre-generated
