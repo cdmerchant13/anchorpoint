@@ -44,11 +44,13 @@ To deploy manually:
 # Install dependencies
 npm ci
 
-# Build static export
+# Build static export (uses output: 'export' from next.config.js)
 npm run export
 
 # The static files will be in the `out/` directory
 ```
+
+**Note**: The `export` script now uses only `next build` since static export is handled by the `output: 'export'` configuration in `next.config.js`. The deprecated `next export` command has been removed.
 
 ## Monitoring Deployment
 
