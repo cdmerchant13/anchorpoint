@@ -52,7 +52,7 @@ const SearchBar = ({ onSearch, loading = false, className = '', ...props }) => {
           <Input
             ref={inputRef}
             type="text"
-            placeholder="Search for base information, housing, schools, healthcare..."
+            placeholder="Enter your base and your query..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -63,7 +63,7 @@ const SearchBar = ({ onSearch, loading = false, className = '', ...props }) => {
             aria-describedby="search-help"
           />
           <p id="search-help" className="mt-1 text-sm text-gray-600 body-small">
-            Try searching for "Fort Campbell housing", "school districts near Joint Base Lewis-McChord", or "healthcare for military families"
+            Try searching for "Fort Campbell housing", "School districts near Joint Base Lewis-McChord", or any other query. Specify your base, and what you'd like to know.
           </p>
         </div>
         <Button

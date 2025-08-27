@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import HeroSection from './components/layout/HeroSection';
@@ -28,72 +28,68 @@ function App() {
   };
 
   return (
-    <>
-          <Router>
-          <Header />
-      <div className="min-h-screen flex flex-col mx-auto max-w-7xl">
-            
-            <main className="flex-grow">
-            {/* Hero Section */}
-            <HeroSection onSearch={handleSearch} />
-            
-            {/* Search Results Section */}
-            {results && (
-              <section className="py-16 bg-white">
-                <div className="container">
-                  <ResultsList 
-                    results={results.sources || []}
-                    loading={loading}
-                    error={error}
-                    query={results.query}
-                    onResultClick={handleResultClick}
-                  />
-                </div>
-              </section>
-            )}
-            
-            {/* Default content when no search is performed */}
-            {!results && (
-              <div className="py-16 bg-white">
-                <div className="container">
-                  <div className="text-center">
-                    <h2 className="heading-2 text-gray-800 mb-8">Ready to find your community?</h2>
-                    <p className="body-large text-gray-600 mb-8">
-                      Join thousands of military spouses who are already sharing knowledge and supporting each other through PCS moves.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                      <button 
-                        className="btn btn-primary"
-                        onClick={() => document.getElementById('search-bar')?.focus()}
-                      >
-                        Start Searching
-                      </button>
-                      <button 
-                        className="btn btn-tertiary"
-                        onClick={() => {
-                          // Navigate to about page
-                          window.location.href = '/about';
-                        }}
-                      >
-                        Learn More
-                      </button>
+    <Router>
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/about" element={<About />} />
+            <Route path="/" element={
+              <>
+                {/* Hero Section */}
+                <HeroSection onSearch={handleSearch} />
+                
+                {/* Search Results Section */}
+                {results && (
+                  <section className="py-16 bg-white">
+                    <div className="container">
+                      <ResultsList 
+                        results={results.sources || []}
+                        loading={loading}
+                        error={error}
+                        query={results.query}
+                        onResultClick={handleResultClick}
+                      />
+                    </div>
+                  </section>
+                )}
+                
+                {/* Default content when no search is performed */}
+                {!results && (
+                  <div className="py-16 bg-white">
+                    <div className="container">
+                      <div className="text-center">
+                        <h2 className="heading-2 text-gray-800 mb-8">Ready to find your community?</h2>
+                        <p className="body-large text-gray-600 mb-8">
+                          Join thousands of military spouses who are already sharing knowledge and supporting each other through PCS moves.
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                          <button 
+                            className="btn btn-primary"
+                            onClick={() => document.getElementById('search-bar')?.focus()}
+                          >
+                            Start Searching
+                          </button>
+                          <Link 
+                            to="/about"
+                            className="btn btn-tertiary"
+                          >
+                            Learn More
+                          </Link>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            )}
-            </main>
-            
+                )}
+              </>
+            } />
+          </Routes>
+        </main>
+        
+        <Footer />
       </div>
-      <Footer />
-
-        {/* Routes for different pages */}
-        <Routes>
-          <Route path="/about" element={<About />} />
-          {/* Additional routes can be added here */}
-        </Routes>
-      </Router>
-    </>
+    </Router>
   );
 }
 

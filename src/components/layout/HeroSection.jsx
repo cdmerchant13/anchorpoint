@@ -16,12 +16,12 @@ const HeroSection = ({ className = '', onSearch, ...props }) => {
         <div className="text-center">
           {/* Main Headline */}
           <h1 className="heading-1 text-gray-800 mb-6">
-            Moving shouldn't mean starting over.
+            Because "we got orders" shouldn't mean "we're going in blind."
           </h1>
           
           {/* Subheadline */}
           <p className="body-large text-gray-600 mb-8 max-w-2xl mx-auto">
-            AnchorPoint helps military spouses find local knowledge and community after PCS moves.
+            AnchorPoint helps military spouses find local knowledge, insights, and community after a PCS.
           </p>
           
           {/* Search Bar */}
@@ -62,7 +62,7 @@ const HeroSection = ({ className = '', onSearch, ...props }) => {
               </div>
               <h3 className="heading-3 text-gray-800 mb-2">Base-Specific Insights</h3>
               <p className="text-gray-600 body-small">
-                Get real-world advice from military families who've been at your new base
+                Get real-world advice from military families who call your "new" base their "old stomping grounds"
               </p>
             </div>
             
@@ -94,7 +94,7 @@ const HeroSection = ({ className = '', onSearch, ...props }) => {
           {/* Welcome Message */}
           <div className="mt-16 p-6 bg-white rounded-lg shadow-sm border border-gray-200">
             <p className="text-gray-600 body-medium italic">
-              "Welcome—we're glad you're here. Let's help you feel at home."
+              "How it works” in 3 steps: 1. Type your duty station and what you want to know → 2. Get insights → 3. Move smarter.
             </p>
           </div>
         </div>
