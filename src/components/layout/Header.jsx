@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 /**
@@ -7,6 +7,24 @@ import { Link } from 'react-router-dom';
  * @param {string} [props.className] - Additional CSS classes
  */
 const Header = ({ className = '', ...props }) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Navigation items - centralized for easy maintenance
+  const navItems = [
+    { to: '/', label: 'Home' },
+    { to: '/about', label: 'About' },
+    { to: '/resources', label: 'Resources' },
+    { to: '/community', label: 'Community' },
+  ];
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <header className={`header ${className}`} {...props}>
       <div className="container mx-auto px-4">
@@ -19,41 +37,49 @@ const Header = ({ className = '', ...props }) => {
             <span className="text-xl font-bold text-gray-800">AnchorPoint</span>
           </Link>
           
-          {/* Navigation */}
+          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link 
-              to="/" 
-              className="text-gray-600 hover:text-primary-blue transition-colors duration-200 body-medium"
-            >
-              Home
-            </Link>
-            <Link 
-              to="/about" 
-              className="text-gray-600 hover:text-primary-blue transition-colors duration-200 body-medium"
-            >
-              About
-            </Link>
-            <Link 
-              to="/resources" 
-              className="text-gray-600 hover:text-primary-blue transition-colors duration-200 body-medium"
-            >
-              Resources
-            </Link>
-            <Link 
-              to="/community" 
-              className="text-gray-600 hover:text-primary-blue transition-colors duration-200 body-medium"
-            >
-              Community
-            </Link>
+            {navItems.map((item) => (
+              <Link 
+                key={item.to}
+                to={item.to} 
+                className="text-gray-600 hover:text-primary-blue transition-colors duration-200 body-medium"
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
           
           {/* Mobile menu button */}
-          <button className="md:hidden p-2 rounded-md text-gray-600 hover:text-primary-blue hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-blue">
+          <button 
+            onClick={toggleMobileMenu}
+            className="md:hidden p-2 rounded-md text-gray-600 hover:text-primary-blue hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-blue"
+            aria-label="Toggle mobile menu"
+            aria-expanded={isMobileMenuOpen}
+          >
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
         </div>
+        
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-gray-200">
+              {navItems.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onClick={closeMobileMenu}
+                  className="block px-3 py-2 text-gray-600 hover:text-primary-blue hover:bg-gray-50 rounded-md transition-colors duration-200 body-medium"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );
