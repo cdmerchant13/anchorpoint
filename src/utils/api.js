@@ -126,7 +126,7 @@ export const checkApiAvailability = async () => {
  */
 export const getApiConfig = () => {
   return {
-    apiUrl: import.meta.env.VITE_PERPLEXICA_API_URL || 'http://localhost:3000/api/search',
+    apiUrl: import.meta.env.VITE_WORKER_API_URL || 'https://ap-tester.merchant-christopher.workers.dev/search',
     apiKey: import.meta.env.VITE_PERPLEXICA_API_KEY || '',
     timeout: import.meta.env.VITE_API_TIMEOUT || 30000
   };

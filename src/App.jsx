@@ -3,7 +3,6 @@ import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import HeroSection from './components/layout/HeroSection';
 import About from './pages/About';
-import ResultsList from './components/features/ResultsList';
 import usePerplexicaQuery from './hooks/usePerplexicaQuery';
 
 function App() {
@@ -11,20 +10,6 @@ function App() {
   
   const handleSearch = (query) => {
     executeQuery(query);
-  };
-  
-  const handleResultClick = (result) => {
-    if (result.type === 'clear') {
-      clearResults();
-    } else if (result.action === 'view-full') {
-      // Handle viewing full result (could open a modal or navigate to detail page)
-      console.log('View full result:', result);
-    } else {
-      // Handle regular result click (could open in new tab)
-      if (result.url && result.url !== '#') {
-        window.open(result.url, '_blank', 'noopener,noreferrer');
-      }
-    }
   };
 
   return (
@@ -37,51 +22,13 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/" element={
               <>
-                {/* Hero Section */}
-                <HeroSection onSearch={handleSearch} />
-                
-                {/* Search Results Section */}
-                {results && (
-                  <section className="py-16 bg-white">
-                    <div className="container">
-                      <ResultsList 
-                        results={results.sources || []}
-                        loading={loading}
-                        error={error}
-                        query={results.query}
-                        onResultClick={handleResultClick}
-                      />
-                    </div>
-                  </section>
-                )}
-                
-                {/* Default content when no search is performed */}
-                {!results && (
-                  <div className="py-16 bg-white">
-                    <div className="container">
-                      <div className="text-center">
-                        <h2 className="heading-2 text-gray-800 mb-8">Ready to find your community?</h2>
-                        <p className="body-large text-gray-600 mb-8">
-                          Join thousands of military spouses who are already sharing knowledge and supporting each other through PCS moves.
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                          <button 
-                            className="btn btn-primary"
-                            onClick={() => document.getElementById('search-bar')?.focus()}
-                          >
-                            Start Searching
-                          </button>
-                          <Link 
-                            to="/about"
-                            className="btn btn-tertiary"
-                          >
-                            Learn More
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                {/* Hero Section with integrated search and results */}
+                <HeroSection 
+                  onSearch={handleSearch}
+                  results={results}
+                  loading={loading}
+                  error={error}
+                />
               </>
             } />
           </Routes>

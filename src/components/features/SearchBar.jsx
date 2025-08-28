@@ -8,9 +8,10 @@ import LoadingSpinner from '../ui/LoadingSpinner';
  * @param {Object} props - Component props
  * @param {Function} props.onSearch - Function to call when search is submitted
  * @param {boolean} props.loading - Whether search is in progress
+ * @param {string} [props.placeholder] - Custom placeholder text
  * @param {string} [props.className] - Additional CSS classes
  */
-const SearchBar = ({ onSearch, loading = false, className = '', ...props }) => {
+const SearchBar = ({ onSearch, loading = false, placeholder = "Enter your base and your query...", className = '', ...props }) => {
   const [query, setQuery] = useState('');
   const [error, setError] = useState('');
   const inputRef = useRef(null);
@@ -52,7 +53,7 @@ const SearchBar = ({ onSearch, loading = false, className = '', ...props }) => {
           <Input
             ref={inputRef}
             type="text"
-            placeholder="Enter your base and your query..."
+            placeholder={placeholder}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}

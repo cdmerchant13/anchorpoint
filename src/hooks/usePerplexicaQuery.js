@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 /**
- * Custom hook for querying the Perplexica API
+ * Custom hook for querying the Perplexica Worker API
  * @param {Object} options - Configuration options
  * @param {string} [options.initialQuery=''] - Initial query to display
  * @param {Object} [options.config] - Additional API configuration
@@ -16,52 +16,27 @@ const usePerplexicaQuery = (options = {}) => {
   const [error, setError] = useState(null);
   const [retryCount, setRetryCount] = useState(0);
   
-  // Default configuration
-  const defaultConfig = {
-    focusMode: 'webSearch',
-    optimizationMode: 'speed',
-    systemInstructions: 'Focus on providing helpful information for military spouses about PCS moves, local resources, community support, base-specific information, housing, schools, healthcare, and other relevant topics for military families.',
-    stream: false,
-    chatModel: { provider: 'openai', name: 'gpt-4o-mini' },
-    embeddingModel: { provider: 'openai', name: 'text-embedding-3-large' },
-    ...config
-  };
-  
   /**
    * Execute a search query
    * @param {string} searchQuery - The search query to execute
-   * @param {Object} overrideConfig - Optional config overrides
    */
-  const executeQuery = async (searchQuery, overrideConfig = {}) => {
+  const executeQuery = async (searchQuery) => {
     const finalQuery = searchQuery || query;
-    const finalConfig = { ...defaultConfig, ...overrideConfig };
     
     setLoading(true);
     setError(null);
     
     try {
-      // Build request body
-      const requestBody = {
-        chatModel: finalConfig.chatModel,
-        embeddingModel: finalConfig.embeddingModel,
-        optimizationMode: finalConfig.optimizationMode,
-        focusMode: finalConfig.focusMode,
-        query: finalQuery,
-        systemInstructions: finalConfig.systemInstructions,
-        stream: finalConfig.stream
-      };
-      
       // Get API URL from environment
-      const apiUrl = import.meta.env.VITE_PERPLEXICA_API_URL || 'http://localhost:3000/api/search';
+      const { apiUrl } = getApiConfig();
       
-      // Make API request
+      // Make API request to worker
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_PERPLEXICA_API_KEY || ''}`
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify({ query: finalQuery })
       });
       
       if (!response.ok) {
@@ -83,12 +58,12 @@ const usePerplexicaQuery = (options = {}) => {
       setRetryCount(0);
       
     } catch (err) {
-      console.error('Perplexica API error:', err);
+      console.error('Perplexica Worker API error:', err);
       
       // Implement retry logic for transient failures
       if (retryCount < 2 && (err.name === 'TypeError' || err.message.includes('Failed to fetch'))) {
         setRetryCount(prev => prev + 1);
-        setTimeout(() => executeQuery(searchQuery, overrideConfig), 1000 * (retryCount + 1));
+        setTimeout(() => executeQuery(searchQuery), 1000 * (retryCount + 1));
         return;
       }
       
@@ -120,5 +95,8 @@ const usePerplexicaQuery = (options = {}) => {
     clearResults
   };
 };
+
+// Import API config function
+import { getApiConfig } from '../utils/api.js';
 
 export default usePerplexicaQuery;
