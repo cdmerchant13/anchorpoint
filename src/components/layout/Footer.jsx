@@ -102,7 +102,7 @@ const Footer = ({ className = '', ...props }) => {
         {/* Copyright */}
         <div className="border-t border-gray-300 mt-8 pt-8 text-center">
           <p className="text-gray-600 body-small">
-            &copy; {new Date().getFullYear()} AnchorPoint. All rights reserved.
+            &copy; {new Date().getFullYear()} AnchorPoint. All rights reserved. Made with love- to ensure nobody moves blind again.
           </p>
         </div>
       </div>

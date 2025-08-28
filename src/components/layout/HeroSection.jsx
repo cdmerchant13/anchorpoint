@@ -25,7 +25,7 @@ const HeroSection = ({ className = '', onSearch, results, loading, error, ...pro
   
   // Handle search from the search bar
   const handleSearch = (query) => {
-    setShowWelcome(false);
+    // Don't immediately hide welcome content - let loading state handle the transition
     if (onSearch) {
       onSearch(query);
     }
@@ -42,8 +42,30 @@ const HeroSection = ({ className = '', onSearch, results, loading, error, ...pro
   return (
     <section className={`py-20 xl:py-32 bg-gradient-to-br from-gray-50 to-gray-100 ${className}`} {...props}>
       <div className="container">
-        {/* Welcome Message (shown when no results) */}
-        {showWelcome && (
+        {/* Always render one SearchBar */}
+        <div className="mb-8 text-center">
+          <SearchBar 
+            onSearch={handleSearch}
+            loading={loading}
+            placeholder={showWelcome ? "Enter your base and your query..." : "Search again..."}
+          />
+        </div>
+        
+        {/* Loading State - shown below SearchBar when loading */}
+        {loading && (
+          <div className="mb-8 text-center">
+            <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-lg">
+              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Searching AnchorPoint's AI-powered Database...
+            </div>
+          </div>
+        )}
+        
+        {/* Welcome Message (shown when no results and not loading) */}
+        {showWelcome && !loading && (
           <div className="text-center">
             {/* Main Headline */}
             <h1 className="heading-1 text-gray-800 mb-6">
@@ -54,13 +76,6 @@ const HeroSection = ({ className = '', onSearch, results, loading, error, ...pro
             <p className="body-large text-gray-600 mb-8 max-w-2xl mx-auto">
               AnchorPoint helps military spouses find local knowledge, insights, and community after a PCS.
             </p>
-            
-            {/* Search Bar */}
-            <div className="mb-8">
-              <SearchBar 
-                onSearch={handleSearch}
-              />
-            </div>
             
             {/* Secondary CTAs */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -134,15 +149,6 @@ const HeroSection = ({ className = '', onSearch, results, loading, error, ...pro
         {/* Search Results (shown when we have results) */}
         {results && (
           <div className="text-left">
-            {/* Updated Search Bar */}
-            <div className="mb-8 text-center">
-              <SearchBar 
-                onSearch={handleSearch}
-                loading={loading}
-                placeholder="Search again..."
-              />
-            </div>
-            
             {/* Results Header */}
             <div className="mb-8 text-center">
               <h2 className="heading-2 text-gray-800 mb-2">
@@ -152,19 +158,6 @@ const HeroSection = ({ className = '', onSearch, results, loading, error, ...pro
                 Query: "{results.query}"
               </p>
             </div>
-            
-            {/* Loading State */}
-            {loading && (
-              <div className="mb-8 text-center">
-                <div className="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-lg">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Searching with Perplexica...
-                </div>
-              </div>
-            )}
             
             {/* Error State */}
             {error && (
@@ -188,7 +181,7 @@ const HeroSection = ({ className = '', onSearch, results, loading, error, ...pro
             )}
             
             {/* Results Content */}
-            {!loading && !error && results.message && (
+            {!loading && !error && results && results.message && (
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 max-w-4xl mx-auto">
                 {/* Render markdown content */}
                 <div 

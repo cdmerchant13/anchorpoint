@@ -51,7 +51,7 @@ const About = ({ className = '', ...props }) => {
               <h2 className="heading-2 text-gray-800 mb-8">
                 Our Mission
               </h2>
-              <p className="body-large text-gray-600 mb-12">
+              <p className="body-large text-gray-800 mb-12">
   AnchorPoint was born out of our own family’s journey. My wife Anna, an Air Force physician, and I moved from Scott AFB in Illinois, to Kunsan AB in Korea, to Valdosta, Georgia — a transition that left us with more questions than answers. Despite being raised in a military family myself, I realized how little information we had about where we were going: neighborhoods, local resources, basic information about the base, or even the best spots to grab a coffee.  
   <br /><br />
   There was plenty I could learn through a Google search, trawling through Reddit threads, keenly pouring over Zillow listings and Military OneSource pages... but nothing that did the critical job of translating the clinical, data-driven information I was taking in into the specifics of what it would be like to truly be on the ground day-to-day: where would it be most convenient to live? What's the vibe like on the base? Will we find events to take part in, how's the community, what IS this city?
