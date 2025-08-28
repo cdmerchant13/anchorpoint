@@ -1,26 +1,18 @@
 {
-  "name": "anchorpoint-proxy-worker",
+  "name": "perplexica-testworker",
   "version": "1.0.0",
-  "description": "Cloudflare Worker for Perplexica API Proxy",
-  "main": "worker.js",
+  "description": "Simple frontend and backend worker for Perplexica API",
+  "main": "server.js",
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
-    "deploy:staging": "wrangler deploy --env staging",
-    "deploy:production": "wrangler deploy --env production",
-    "tail": "wrangler tail",
-    "tail:production": "wrangler tail --env production",
-    "types": "wrangler types"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.0",
+    "cors": "^2.8.5"
   },
   "devDependencies": {
-    "wrangler": "^3.0.0"
-  },
-  "keywords": [
-    "cloudflare-worker",
-    "proxy",
-    "perplexica",
-    "api"
-  ],
-  "author": "Your Name",
-  "license": "MIT"
+    "nodemon": "^3.0.1"
+  }
 }
