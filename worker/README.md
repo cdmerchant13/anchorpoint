@@ -21,7 +21,6 @@ A simple Node.js/JavaScript frontend and backend worker that provides an interfa
 2. Install dependencies:
    ```bash
    npm install
-   ```
 
 ## Usage
 

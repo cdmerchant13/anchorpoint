@@ -8,19 +8,6 @@ A React-based web application that helps U.S. military spouses connect, share lo
 - **Landing Page** (src/App.jsx) - Hero section with search functionality, value propositions, and responsive design
 - **About Page** (src/pages/About.jsx) - Mission statement, target audience information, and contact details
 
-### Phase 4: Feature Components & Integration
-- **Search Components** (src/components/features/)
-  - SearchBar.jsx - Input with submit functionality and loading states
-  - ResultsList.jsx - Container for search results with loading/error states
-  - ResultItem.jsx - Individual result display with metadata and actions
-- **Custom Hooks**
-  - usePerplexicaQuery.js - API integration hook with retry logic
-  - API utility functions (src/utils/api.js) - Request building, error handling, and data formatting
-- **State Management**
-  - Loading states with visual indicators
-  - Comprehensive error handling and user feedback
-  - Search results management with formatted data
-
 ### Phase 5: Polish & Optimization
 - **Accessibility Implementation**
   - Proper color contrast ratios meeting WCAG 2.1 AA standards
@@ -131,22 +118,10 @@ cd anchorpoint
 npm install
 ```
 
-3. Set up environment variables:
-```bash
-cp .env.example .env.local
-```
-Edit `.env.local` and add your Perplexica API configuration:
-```env
-VITE_PERPLEXICA_API_URL=http://localhost:3000/api/search
-VITE_PERPLEXICA_API_KEY=your-api-key-here
-```
-
 4. Start the development server:
 ```bash
 npm run dev
 ```
-
-5. Open [http://localhost:5173](http://localhost:5173) in your browser
 
 ## 🔧 Available Scripts
 
@@ -157,26 +132,7 @@ npm run dev
 
 ## 🌐 API Integration
 
-The application integrates with the Perplexica API for AI-powered search functionality:
-
-### Environment Configuration
-```env
-VITE_PERPLEXICA_API_URL=http://localhost:3000/api/search
-VITE_PERPLEXICA_API_KEY=your-api-key-here
-```
-
-### API Request Structure
-```javascript
-const requestBody = {
-  chatModel: { provider: "openai", name: "gpt-4o-mini" },
-  embeddingModel: { provider: "openai", name: "text-embedding-3-large" },
-  optimizationMode: "speed",
-  focusMode: "webSearch",
-  query: userQuery,
-  systemInstructions: "Focus on providing helpful information for military spouses...",
-  stream: false
-};
-```
+The application integrates with the Perplexica API for AI-powered search functionality via the functionality in ./worker
 
 ## 📱 Responsive Design
 
@@ -207,7 +163,6 @@ The application is fully responsive with:
 
 ### Search Flow
 1. User enters query in search bar
-2. Query is validated and sanitized
 3. API request is made to Perplexica
 4. Loading state is displayed
 5. Results are formatted and displayed
