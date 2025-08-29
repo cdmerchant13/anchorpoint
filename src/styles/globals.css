@@ -415,3 +415,276 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* Enhanced Prose Styling for API Response Content */
+.prose {
+  color: var(--gray-800);
+  max-width: none;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  color: var(--gray-900);
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 1.5em;
+  margin-bottom: 0.75em;
+}
+
+.prose h1 {
+  font-size: 2.25em;
+  font-weight: 800;
+  color: var(--primary-blue);
+  border-bottom: 3px solid var(--primary-blue);
+  padding-bottom: 0.5em;
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+.prose h2 {
+  font-size: 1.875em;
+  font-weight: 700;
+  color: var(--primary-red);
+  border-bottom: 2px solid var(--primary-red);
+  padding-bottom: 0.375em;
+  margin-top: 1.5em;
+  margin-bottom: 0.875em;
+}
+
+.prose h3 {
+  font-size: 1.5em;
+  font-weight: 700 !important;
+  color: var(--primary-red) !important;
+  margin-top: 1.25em;
+  margin-bottom: 0.75em;
+  position: relative;
+  display: block !important;
+}
+
+.prose h3::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--primary-red);
+  opacity: 0.3;
+}
+
+.prose h4 {
+  font-size: 1.125em;
+  font-weight: 600;
+  color: var(--primary-blue);
+  text-decoration: underline;
+  text-decoration-color: var(--primary-blue);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  margin-top: 1.125em;
+  margin-bottom: 0.75em;
+  display: inline-block;
+}
+
+.prose h5 {
+  font-size: 1em;
+  font-weight: 600;
+  color: var(--primary-red);
+  text-decoration: underline;
+  text-decoration-color: var(--primary-red);
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  margin-top: 1em;
+  margin-bottom: 0.625em;
+  display: inline-block;
+}
+
+.prose h6 {
+  font-size: 0.875em;
+  font-weight: 600;
+  color: var(--dark-blue);
+  border-left: 3px solid var(--dark-blue);
+  padding-left: 0.75em;
+  margin-top: 0.875em;
+  margin-bottom: 0.5em;
+  display: inline-block;
+}
+
+.prose p {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+  line-height: 1.7;
+  color: var(--gray-700);
+}
+
+.prose p:first-child {
+  margin-top: 0;
+}
+
+.prose ul, .prose ol {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+  padding-left: 1.875em;
+}
+
+.prose li {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose blockquote {
+  font-style: italic;
+  border-left: 4px solid var(--primary-blue);
+  padding-left: 1.25em;
+  margin: 1.5em 0;
+  color: var(--gray-600);
+}
+
+.prose code {
+  background-color: var(--gray-100);
+  padding: 0.125em 0.375em;
+  border-radius: 0.25em;
+  font-size: 0.875em;
+  color: var(--primary-blue);
+  font-family: var(--font-mono);
+}
+
+.prose pre {
+  background-color: var(--gray-900);
+  color: var(--primary-white);
+  padding: 1.25em;
+  border-radius: 0.5em;
+  overflow-x: auto;
+  margin: 1.5em 0;
+}
+
+.prose pre code {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+  font-size: 0.875em;
+}
+
+.prose a {
+  color: var(--primary-blue);
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.prose a:hover {
+  color: var(--light-blue);
+  text-decoration: underline;
+}
+
+.prose strong {
+  color: var(--gray-900);
+  font-weight: 700;
+}
+
+.prose em {
+  color: var(--gray-700);
+  font-style: italic;
+}
+
+.prose hr {
+  border: none;
+  border-top: 2px solid var(--gray-200);
+  margin: 2em 0;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+}
+
+.prose th, .prose td {
+  border: 1px solid var(--gray-200);
+  padding: 0.75em 1em;
+  text-align: left;
+}
+
+.prose th {
+  background-color: var(--gray-50);
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5em;
+  margin: 1.5em 0;
+}
+
+/* Responsive adjustments for prose content */
+@media (max-width: 768px) {
+  .prose h1 {
+    font-size: 1.875em;
+  }
+  
+  .prose h2 {
+    font-size: 1.5em;
+  }
+  
+  .prose h3 {
+    font-size: 1.25em;
+  }
+  
+  .prose h4 {
+    font-size: 1em;
+  }
+  
+  .prose h5 {
+    font-size: 0.875em;
+  }
+  
+  .prose h6 {
+    font-size: 0.75em;
+  }
+  
+  .prose p {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+}
+
+/* Custom prose variants for different content types */
+.prose-lg-custom {
+  @apply prose prose-lg max-w-none;
+}
+
+.prose-lg-custom h1 {
+  @apply text-3xl font-bold text-primary-blue border-b-4 border-primary-blue pb-2 mb-6 mt-0;
+}
+
+.prose-lg-custom h2 {
+  @apply text-2xl font-bold text-primary-red border-b-2 border-primary-red pb-1 mb-4 mt-6;
+}
+
+.prose-lg-custom h3 {
+  @apply text-xl font-semibold text-dark-blue mb-3 mt-5;
+}
+
+.prose-lg-custom p {
+  @apply text-gray-700 leading-relaxed mb-4;
+}
+
+.prose-lg-custom ul, .prose-lg-custom ol {
+  @apply mb-4 ml-6;
+}
+
+.prose-lg-custom li {
+  @apply mb-2;
+}
+
+.prose-lg-custom a {
+  @apply text-primary-blue underline font-medium hover:text-light-blue;
+}
+
+.prose-lg-custom strong {
+  @apply text-gray-900 font-bold;
+}
+
+.prose-lg-custom em {
+  @apply text-gray-700 italic;
+}

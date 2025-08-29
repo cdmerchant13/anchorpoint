@@ -164,6 +164,14 @@ The search functionality uses a separate worker server that:
 - **Inputs**: Focus states with proper contrast
 - **Loading States**: Accessible spinners with ARIA attributes
 
+### Enhanced Content Styling
+- **Prose Typography**: Tailwind Typography plugin integration for markdown content
+- **API Response Styling**: Custom `.prose-lg-custom` class for enhanced search result presentation
+- **Header Hierarchy**: Color-coded headers (H1: blue, H2: red, H3: dark blue) with bottom borders
+- **Improved Spacing**: Consistent margins and padding for better readability
+- **Responsive Typography**: Font sizes adjust for mobile devices
+- **Interactive Elements**: Styled links, code blocks, and lists with proper hover states
+
 ## 🔍 Search Functionality
 
 The application integrates with the Perplexica API through a worker server for AI-powered search:

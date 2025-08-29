@@ -183,9 +183,9 @@ const HeroSection = ({ className = '', onSearch, results, loading, error, ...pro
             {/* Results Content */}
             {!loading && !error && results && results.message && (
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 max-w-4xl mx-auto">
-                {/* Render markdown content */}
+                {/* Render markdown content with enhanced styling */}
                 <div 
-                  className="prose prose-lg max-w-none"
+                  className="prose prose-lg-custom max-w-none"
                   dangerouslySetInnerHTML={{ 
                     __html: marked.parse(results.message)
                   }}
@@ -223,16 +223,6 @@ const HeroSection = ({ className = '', onSearch, results, loading, error, ...pro
                     </div>
                   </div>
                 )}
-                
-                {/* Clear Results Button */}
-                <div className="mt-8 text-center">
-                  <button 
-                    onClick={handleClearSearch}
-                    className="px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
-                  >
-                    Clear Results
-                  </button>
-                </div>
               </div>
             )}
           </div>

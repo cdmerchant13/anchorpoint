@@ -245,7 +245,6 @@ const Resources = ({ className = '', ...props }) => {
         </section>
       </main>
       
-      <Footer />
     </div>
   );
 };

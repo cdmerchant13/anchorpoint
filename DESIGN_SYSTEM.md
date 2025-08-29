@@ -42,6 +42,38 @@ The AnchorPoint design system is based on a patriotic red/white/blue color schem
 - **Body Small**: 14px
 - **Caption**: 12px
 
+### Prose Typography (Markdown Content)
+The design system includes enhanced typography for API response content and markdown rendering:
+
+#### Header Hierarchy with Color Coding
+- **H1**: Primary blue (`#3C3B6E`) with 3px bottom border
+- **H2**: Primary red (`#B22234`) with 2px bottom border  
+- **H3**: Primary red (`#B22234`) with 30% opacity bottom accent line
+- **H4**: Primary blue (`#3C3B6E`) with solid underline
+- **H5**: Primary red (`#B22234`) with dotted underline
+- **H6**: Dark blue (`#2C2B4E`) with left border accent
+
+#### Spacing System
+- **Headers**: Consistent top/bottom margins for visual separation
+- **Paragraphs**: 1.25em top/bottom margins with 1.7 line height
+- **Lists**: Proper indentation and spacing between items
+- **Blockquotes**: Blue left border with italic styling
+
+#### Interactive Elements
+- **Links**: Primary blue with underline, hover to lighter blue
+- **Code**: Gray background with blue text
+- **Pre blocks**: Dark background with white text
+- **Tables**: Clean borders with header background
+
+#### Responsive Typography
+- Mobile font size adjustments for headers and body text
+- Maintains readability across all device sizes
+
+#### Implementation
+- Uses Tailwind Typography plugin (`@tailwindcss/typography`)
+- Custom `.prose-lg-custom` class for enhanced styling
+- Applied to API response content in `HeroSection.jsx`
+
 ## Spacing System
 
 Based on an 8px grid:
