@@ -3,6 +3,7 @@ import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import HeroSection from './components/layout/HeroSection';
 import About from './pages/About';
+import Resources from './pages/Resources';
 import usePerplexicaQuery from './hooks/usePerplexicaQuery';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <main className="flex-grow">
           <Routes>
             <Route path="/about" element={<About />} />
+            <Route path="/resources" element={<Resources />} />
             <Route path="/" element={
               <>
                 {/* Hero Section with integrated search and results */}

@@ -1,47 +1,27 @@
 # AnchorPoint - Military Spouse Community Platform
 
-A React-based web application that helps U.S. military spouses connect, share local knowledge, and rebuild community after Permanent Change of Station (PCS) moves.
+A React-based web application designed to help U.S. military spouses connect, share local knowledge, and rebuild community after Permanent Change of Station (PCS) moves.
 
-## 🚀 Features
+## 🎯 Project Intent
 
-### Phase 3: Page Development
-- **Landing Page** (src/App.jsx) - Hero section with search functionality, value propositions, and responsive design
-- **About Page** (src/pages/About.jsx) - Mission statement, target audience information, and contact details
+AnchorPoint addresses the unique challenges faced by military spouses who frequently relocate due to military assignments. The platform aims to:
 
-### Phase 5: Polish & Optimization
-- **Accessibility Implementation**
-  - Proper color contrast ratios meeting WCAG 2.1 AA standards
-  - Focus states for all interactive elements
-  - Semantic HTML structure throughout
-  - ARIA labels for screen readers
-- **SEO Optimization**
-  - Comprehensive meta tags in HTML head
-  - Proper heading hierarchy (H1-H3)
-  - Open Graph and Twitter Card meta tags
-  - Crawlable content structure
-- **Responsive Design**
-  - Mobile-first approach with breakpoints at 640px, 768px, 1024px, 1280px, and 1536px
-  - Proper spacing and typography scaling
-  - Touch-friendly interactive elements
+- Provide a centralized hub for military spouses to find and share local information
+- Facilitate community building among spouses in new locations
+- Offer AI-powered search capabilities to quickly find relevant information about new duty stations
+- Create a supportive network for military families during transitions
 
-## 🎨 Design System
+## 🌐 Current Features
 
-### Color Palette
-- **Primary Red**: `#B22234` - Traditional flag red
-- **Primary Blue**: `#3C3B6E` - Traditional flag blue
-- **Primary White**: `#FFFFFF` - Clean white
-- **Secondary Colors**: Light variants and grayscale scale
+### Core Application
+- **Landing Page** (src/App.jsx) - Hero section with search functionality and value propositions
+- **About Page** (src/pages/About.jsx) - Mission statement and contact information
+- **Search Functionality** - AI-powered search using Perplexica API for finding relevant information
 
-### Typography
-- **Font Family**: System stack with fallbacks
-- **Font Sizes**: 12px-48px responsive scale
-- **Headings**: Proper hierarchy with clamp() for responsive sizing
-
-### Component Library
-- **Buttons**: Three variants (primary, secondary, tertiary) with hover states
-- **Cards**: Consistent styling with subtle shadows and accent borders
-- **Inputs**: Focus states with proper contrast
-- **Loading States**: Accessible spinners with ARIA attributes
+### Technical Implementation
+- **Responsive Design** - Mobile-first approach with breakpoints at 640px, 768px, 1024px, 1280px, and 1536px
+- **Accessibility** - WCAG 2.1 AA compliant with proper color contrast, semantic HTML, and ARIA labels
+- **SEO Optimization** - Meta tags, proper heading hierarchy, and Open Graph integration
 
 ## 🛠️ Technical Stack
 
@@ -51,6 +31,9 @@ A React-based web application that helps U.S. military spouses connect, share lo
 - **React Router** - Client-side routing
 - **Tailwind CSS** - Utility-first CSS framework
 - **PostCSS** - CSS processing
+
+### Search Integration
+- **Perplexica API** - AI-powered search functionality via worker server
 
 ### Development Tools
 - **ESLint** - Code linting with React rules
@@ -87,10 +70,17 @@ anchorpoint/
 │   ├── styles/
 │   │   └── globals.css
 │   ├── utils/
-│   │   └── api.js
+│   │   ├── api.js
+│   │   └── markedConfig.js
 │   ├── App.jsx
 │   ├── main.jsx
 │   └── index.css
+├── worker/
+│   ├── server.js
+│   ├── package.json
+│   ├── public/
+│   │   └── index.html
+│   └── README.md
 ├── .env.local
 ├── .gitignore
 ├── package.json
@@ -109,7 +99,7 @@ anchorpoint/
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/anchorpoint.git
+git clone https://github.com/cdmerchant13/anchorpoint.git
 cd anchorpoint
 ```
 
@@ -118,7 +108,7 @@ cd anchorpoint
 npm install
 ```
 
-4. Start the development server:
+3. Start the development server:
 ```bash
 npm run dev
 ```
@@ -130,29 +120,53 @@ npm run dev
 - `npm run preview` - Preview production build
 - `npm run lint` - Run ESLint
 
-## 🌐 API Integration
+## 🌐 Deployment Process
 
-The application integrates with the Perplexica API for AI-powered search functionality via the functionality in ./worker
+### Production Build
+```bash
+npm run build
+```
 
-## 📱 Responsive Design
+This command:
+1. Bundles the React application using Vite
+2. Optimizes assets for production
+3. Generates a static build in the `dist/` directory
 
-The application is fully responsive with:
-- Mobile-first approach
-- Breakpoints at 640px, 768px, 1024px, 1280px, and 1536px
-- Flexible grid layouts
-- Touch-friendly interactive elements
-- Optimized typography scaling
+### Local Preview
+```bash
+npm run preview
+```
 
-## ♿ Accessibility Features
+This command starts a local server to preview the production build.
 
-- WCAG 2.1 AA compliant color contrast ratios
-- Semantic HTML structure
-- Keyboard navigation support
-- ARIA labels and roles
-- Focus indicators for all interactive elements
-- Screen reader friendly content
+### Worker Server Deployment
+The search functionality uses a separate worker server that:
+1. Must be deployed separately from the main application
+2. Handles API requests to the Perplexica service
+3. Processes search queries and returns formatted results
+
+## 🎨 Design System
+
+### Color Palette
+- **Primary Red**: `#B22234` - Traditional flag red
+- **Primary Blue**: `#3C3B6E` - Traditional flag blue
+- **Primary White**: `#FFFFFF` - Clean white
+- **Secondary Colors**: Light variants and grayscale scale
+
+### Typography
+- **Font Family**: System stack with fallbacks
+- **Font Sizes**: 12px-48px responsive scale
+- **Headings**: Proper hierarchy with clamp() for responsive sizing
+
+### Component Library
+- **Buttons**: Three variants (primary, secondary, tertiary) with hover states
+- **Cards**: Consistent styling with subtle shadows and accent borders
+- **Inputs**: Focus states with proper contrast
+- **Loading States**: Accessible spinners with ARIA attributes
 
 ## 🔍 Search Functionality
+
+The application integrates with the Perplexica API through a worker server for AI-powered search:
 
 ### Features
 - Real-time search with debouncing
@@ -163,30 +177,28 @@ The application is fully responsive with:
 
 ### Search Flow
 1. User enters query in search bar
-3. API request is made to Perplexica
-4. Loading state is displayed
-5. Results are formatted and displayed
-6. User can interact with results
+2. API request is made to Perplexica via worker server
+3. Loading state is displayed
+4. Results are formatted and displayed
+5. User can interact with results
 
-## 🎯 Future Enhancements
+## ♿ Accessibility Features
 
-### Phase 2 Features (Planned)
-- User authentication system
-- User profiles and preferences
-- Search history and saved searches
-- Community features (forums, groups)
+- WCAG 2.1 AA compliant color contrast ratios
+- Semantic HTML structure throughout
+- Keyboard navigation support
+- ARIA labels and roles for screen readers
+- Focus indicators for all interactive elements
+- Responsive design for all device sizes
 
-### Technical Improvements
-- Advanced search filters
-- Real-time search with streaming
-- Personalized search results
-- Advanced analytics
+## 📱 Responsive Design
 
-### UI/UX Enhancements
-- Dark mode support
-- Advanced search interface
-- Result filtering and sorting
-- Mobile app development
+The application is fully responsive with:
+- Mobile-first approach
+- Breakpoints at 640px, 768px, 1024px, 1280px, and 1536px
+- Flexible grid layouts
+- Touch-friendly interactive elements
+- Optimized typography scaling
 
 ## 🤝 Contributing
 
@@ -205,12 +217,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Military spouse community for inspiration and feedback
 - Perplexica team for the AI search API
 - Vercel for the excellent development platform
-
-## 📞 Contact
-
-- Email: hello@anchorpoint.com
-- Community: Join our Facebook group
-- Support: 24/7 Military Family Support
 
 ---
 
