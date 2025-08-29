@@ -36,6 +36,8 @@ const About = ({ className = '', ...props }) => {
               <Button 
                 variant="tertiary" 
                 size="large"
+                as={Link}
+                to="/how-it-works"
                 className="text-primary-blue border-primary-blue"
               >
                 Learn More

@@ -4,6 +4,7 @@ import Footer from './components/layout/Footer';
 import HeroSection from './components/layout/HeroSection';
 import About from './pages/About';
 import Resources from './pages/Resources';
+import HowItWorks from './pages/HowItWorks.jsx';
 import usePerplexicaQuery from './hooks/usePerplexicaQuery';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
           <Routes>
             <Route path="/about" element={<About />} />
             <Route path="/resources" element={<Resources />} />
+            <Route path="/how-it-works" element={<HowItWorks />} />
             <Route path="/" element={
               <>
                 {/* Hero Section with integrated search and results */}

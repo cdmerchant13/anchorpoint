@@ -59,6 +59,11 @@ const Footer = ({ className = '', ...props }) => {
                 </Link>
               </li>
               <li>
+                <Link to="/how-it-works" className="text-gray-600 hover:text-primary-blue transition-colors duration-200 body-small">
+                  How It Works
+                </Link>
+              </li>
+              <li>
                 <Link to="/resources" className="text-gray-600 hover:text-primary-blue transition-colors duration-200 body-small">
                   Resources
                 </Link>

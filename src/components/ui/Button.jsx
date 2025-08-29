@@ -1,7 +1,7 @@
 import React from 'react';
 
 /**
- * Button component with multiple variants
+ * Button component with multiple variants and polymorphic support
  * @param {Object} props - Component props
  * @param {string} [props.variant='primary'] - Button variant: 'primary', 'secondary', or 'tertiary'
  * @param {string} [props.size='medium'] - Button size: 'small', 'medium', or 'large'
@@ -10,6 +10,7 @@ import React from 'react';
  * @param {React.ReactNode} props.children - Button content
  * @param {Function} [props.onClick] - Click handler
  * @param {string} [props.className] - Additional CSS classes
+ * @param {React.ElementType} [props.as='button'] - Component to render as (e.g., 'a', Link, etc.)
  */
 const Button = ({ 
   variant = 'primary', 
@@ -19,6 +20,7 @@ const Button = ({
   children, 
   onClick,
   className = '',
+  as: Component = 'button',
   ...props 
 }) => {
   const baseClasses = 'btn inline-flex items-center justify-center transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2';
@@ -39,11 +41,25 @@ const Button = ({
   
   const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabledClasses} ${className}`;
   
+  // Handle disabled state for non-button elements
+  const buttonProps = {};
+  if (Component !== 'button') {
+    if (disabled) {
+      buttonProps.onClick = (e) => e.preventDefault();
+      buttonProps.tabIndex = -1;
+      buttonProps['aria-disabled'] = true;
+    } else {
+      buttonProps.onClick = onClick;
+    }
+  } else {
+    buttonProps.onClick = onClick;
+    buttonProps.disabled = disabled || loading;
+  }
+  
   return (
-    <button
+    <Component
       className={classes}
-      onClick={onClick}
-      disabled={disabled || loading}
+      {...buttonProps}
       {...props}
     >
       {loading && (
@@ -69,7 +85,7 @@ const Button = ({
         </svg>
       )}
       {children}
-    </button>
+    </Component>
   );
 };
 

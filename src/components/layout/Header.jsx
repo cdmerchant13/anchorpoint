@@ -13,8 +13,8 @@ const Header = ({ className = '', ...props }) => {
   const navItems = [
     { to: '/', label: 'Home' },
     { to: '/about', label: 'About' },
+    { to: '/how-it-works', label: 'How It Works' },
     { to: '/resources', label: 'Resources' },
-    { to: '/community', label: 'Community' },
   ];
 
   const toggleMobileMenu = () => {

@@ -91,9 +91,9 @@ const HeroSection = ({ className = '', onSearch, results, loading, error, ...pro
                 size="large" 
                 variant="secondary"
                 as={Link}
-                to="/community"
+                to="/how-it-works"
               >
-                Join the Community
+                How It Works
               </Button>
             </div>
             
