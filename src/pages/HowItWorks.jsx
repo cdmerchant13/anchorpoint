@@ -33,9 +33,9 @@ const HowItWorks = ({ className = '', ...props }) => {
         </section>
 
         {/* Process Section */}
-        <section className="py-16">
+        <section className="py-8">
           <div className="container">
-            <div className="text-center mb-16">
+            <div className="text-center">
               <h2 className="heading-2 text-gray-800 mb-8">
                 Your Knowledge Journey
               </h2>
@@ -44,7 +44,7 @@ const HowItWorks = ({ className = '', ...props }) => {
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
               <div className="text-center p-6 bg-white rounded-lg shadow-sm border border-gray-200">
                 <div className="w-16 h-16 bg-primary-red bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-primary-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,14 +85,14 @@ const HowItWorks = ({ className = '', ...props }) => {
         </section>
 
         {/* AI Differentiation */}
-        <section className="py-16 bg-gray-50">
+        <section className="py-8 bg-gray-50">
           <div className="container">
             <div className="text-center mb-12">
               <h2 className="heading-2 text-gray-800 mb-6">
-                Not Just Any AI
+                Don't Just Ask An AI
               </h2>
               <p className="body-large text-gray-600 max-w-2xl mx-auto">
-                We're built with military-family priorities at our core
+                AnchorPoint is built with military-family priorities at our core:
               </p>
             </div>
             
@@ -136,7 +136,7 @@ const HowItWorks = ({ className = '', ...props }) => {
                     </div>
                     <div>
                       <h4 className="heading-4 text-gray-800">Kid & Pet Priority</h4>
-                      <p className="text-gray-600 body-small">Surfaces schools, vets, parks before nightlife</p>
+                      <p className="text-gray-600 body-small">Surfaces schools, vets, parks- the things important to you</p>
                     </div>
                   </li>
                   <li className="flex items-start">
@@ -156,7 +156,83 @@ const HowItWorks = ({ className = '', ...props }) => {
           </div>
         </section>
 
-        {/* Trust Section */}
+        {/* Benefits Comparison */}
+        <section className="py-8 bg-gradient-to-b from-primary-blue to-dark-blue">
+          <div className="container">
+            <div className="text-center mb-6">
+              <h2 className="heading-2 text-white mb-6">
+                Why Use Generic AI tools?
+              </h2>
+              <p className="body-large text-blue-100 max-w-2xl mx-auto">
+                Seriously. Try it out- ask your favorite Chat AI to tell you about your local area or your base you know well- watch it get EVERYTHING wrong. AnchorPoint merges real military family experiences with specialized, trained AI systems to solve PCS challenges other tools just don't understand
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-white rounded-xl p-8">
+              <div>
+                <h3 className="heading-3 bg-red-600 text-white py-2 px-4 rounded-full inline-block mb-8">
+                  Generic AI Tools
+                </h3>
+                <ul className="space-y-3">
+                  {[
+                    "Broad web scraping, catching bad data",
+                    "Outdated information- who cares what the base was like in 2015?",
+                    "No military living context",
+                    "FAQ-style answers",
+                    "No BAH understanding"
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start text-gray-700">
+                      <svg className="w-6 h-6 text-red-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="heading-3 bg-primary-blue text-white py-2 px-4 rounded-full inline-block mb-4">
+                  AnchorPoint
+                </h3>
+                <ul className="space-y-3">
+                  {[
+                    "Military-only sources (Reddit, spouse forums, Military OneSource and more)",
+                    "Prioritizes current PCS experiences (2020+)",
+                    "Context-aware base-specific information",
+                    "Actionable PCS pro-tips and insights",
+                    "BAH-smart and base-aware housing analysis"
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start text-gray-800">
+                      <svg className="w-6 h-6 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            <div className="text-center">
+              <h3 className="heading-3 text-white mt-8">
+                Stop Stress-Searching
+              </h3>
+              <p className="body-large text-blue-100 mb-8">
+                Get PCS answers from military spouses who've been there
+              </p>
+              <Button 
+                variant="secondary" 
+                size="large"
+                as={Link}
+                to="/"
+              >
+                Ask AnchorPoint Now
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* Trust Section 
         <section className="py-16">
           <div className="container">
             <div className="text-center mb-12">
@@ -168,7 +244,7 @@ const HowItWorks = ({ className = '', ...props }) => {
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="text-center">
                 <div className="w-12 h-12 bg-primary-red bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-primary-red font-bold">1</span>
@@ -201,28 +277,8 @@ const HowItWorks = ({ className = '', ...props }) => {
             </div>
           </div>
         </section>
-
+*/}
         {/* CTA Section */}
-        <section className="py-16 bg-primary-blue text-white">
-          <div className="container">
-            <div className="text-center">
-              <h2 className="heading-2 text-white mb-8">
-                Stop Stress-Searching
-              </h2>
-              <p className="body-large text-blue-100 mb-12">
-                Get PCS answers from military spouses who've been there
-              </p>
-              <Button 
-                variant="secondary" 
-                size="large"
-                as={Link}
-                to="/"
-              >
-                Ask AnchorPoint Now
-              </Button>
-            </div>
-          </div>
-        </section>
       </main>
 
     </div>
