@@ -56,9 +56,9 @@ const About = ({ className = '', ...props }) => {
               <p className="body-large text-gray-800 mb-12">
   AnchorPoint was born out of our own family’s journey. My wife Anna, an Air Force physician, and I moved from Scott AFB in Illinois, to Kunsan AB in Korea, to Valdosta, Georgia — a transition that left us with more questions than answers. Despite being raised in a military family myself, I realized how little information we had about where we were going: neighborhoods, local resources, basic information about the base, or even the best spots to grab a coffee.  
   <br /><br />
-  There was plenty I could learn through a Google search, trawling through Reddit threads, keenly pouring over Zillow listings and Military OneSource pages... but nothing that did the critical job of translating the clinical, data-driven information I was taking in into the specifics of what it would be like to truly be on the ground day-to-day: where would it be most convenient to live? What's the vibe like on the base? Will we find events to take part in, how's the community, what IS this city?
+  There was plenty I could learn through a Google search, trawling through Reddit threads, keenly poring over Zillow listings and Military OneSource pages... but nothing that did the critical job of translating the clinical, data-driven information I was taking in into the specifics of what it would be like to truly be on the ground day-to-day: where would it be most convenient to live? What's the vibe like on the base? Will we find events to take part in? How's the community? What IS this city?
   <br /><br />
-  That experience opened my eyes to how often military spouses and families have to start from scratch with every PCS. AnchorPoint is our answer; a way to collate hard-earned knowledge, generate answers, and make sure no one feels unprepared or alone when arriving at a new duty station.
+  That experience opened my eyes to how often military spouses and families have to start from scratch with every PCS. AnchorPoint is our answer—a way to collate hard-earned knowledge, generate answers, and make sure no one feels unprepared or alone when arriving at a new duty station.
 </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="text-center p-6 bg-white rounded-lg shadow-sm border border-gray-200">
